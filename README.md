@@ -11,6 +11,10 @@ Luis Benet
 Julián Ramírez Castro
 [Facultad de Ciencias, UNAM](http://www.fciencias.unam.mx)
 
+
+*Lunes 10-12 -- Jueves 10-11*
+
+
 ---
 
 ### Contenido del curso
@@ -21,7 +25,6 @@ En el curso estudiaremos (e implementaremos en el lenguaje de programación [Jul
 
 ### Temario
 
-- Programación en `Julia` y `git`
 - Aritmética de punto flotante y redondeo
 - Aritmética de intervalos
 - Funciones de intervalos
