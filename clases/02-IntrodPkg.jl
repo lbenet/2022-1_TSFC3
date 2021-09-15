@@ -1,5 +1,14 @@
 # # Manejo de Paquetes (Pkg)
 
+# > NOTA: En lo siguiente supondremos que se encuentran en el directorio raíz del curso
+# > esto es, el que termina en "2022-1_TSFC3" si hicieron la clonación usual a partir
+# > del [repositorio del curso](https://github.com/lbenet/2022-1_TSFC3).
+# > Si fuera necesario cambiarse a ese directorio, una posibilidad es hacerlo explotando
+# > las herramientas del sistema operativo; otra, es usar el comando `pwd()` que indica
+# > el lugar (directorio de trabajo) en el que nos encontramos, y usar `cd("<directorio>")`
+# > para cambiarnos al directorio `<directorio>`, relativo al que estamos, y donde se encuentra
+# > la carpeta principal del curso (las comillas dobles `"` son importantes al usar `cd`.
+
 # Julia tiene un potente manejador de paquetes, [`Pkg`](https://docs.julialang.org/en/v1/stdlib/Pkg/),
 # que está concebido para permitir
 # la reproducibilidad del código, entre otras propiedades. Hay varias paqueterías que
@@ -46,7 +55,7 @@ Pkg.add("IJulia")
 
 #-
 
-Pkg.build("IJulia")  # Esto lo deben rehacer si actualizan IJulia
+Pkg.build("IJulia")  # Esto lo deben volver a hacer si actualizan IJulia
 
 # Para saber qué paquetes tenemos instalados, usamos `Pkg.status()`.
 
@@ -54,9 +63,10 @@ Pkg.status()
 
 # Cuando iniciemos cualquier actividad del curso, será importante activar nuevamente
 # el projecto, lo que esencialmente permitirá *cargar* (con `using`) las librerías
-# que usaremos.
+# que usaremos. Volver a instanciar se requiere si hay nuevas paqueterías, es decir,
+# cambios en los archivos `Project.toml` y `Manifest.toml`.
 
-# Nota: Muchos de los comandos anteriores se simplifican desde el REPL (sesión de
+# Muchos de los comandos anteriores se simplifican desde el REPL (sesión de
 # Julia en la terminal) donde `]` (al principio de la línea de comando) da entrada
 # al modo de trabajo con los paquetes. En este caso, al entrar a este modo, haremos:
 # ```julia
@@ -94,44 +104,53 @@ Pkg.status()
 #   1 dependency successfully precompiled in 2 seconds (3 already precompiled)
 # ```
 
+# Para agregar `IJulia` usaremos `add IJulia` seguido de `build IJulia` estando
+# dentro del manejador de paquetes en el REPL.
+
 # # Generando notebooks (`ipynb`) con `Literate.jl`
 
 # Aquí ilustraré cómo generar los Jupyter notebooks con el contenido
 # de las clases, usando [Literate.jl](https://github.com/fredrikekre/Literate.jl).
 # Supondremos, por consistencia, que estamos en el directorio raiz del curso,
-# y que ahí iniciaremos una sesión del REPL.
-#
+# que es "2022-1_TSFC3" (y que en mi caso es "2022-1")
+# y que ahí iniciaremos una sesión del REPL. Primero, activaremos el repositorio del
+# curso (usando la tecla `]`, y para salirnos del manejador de paquetes usaremos la
+# tecla <delete>) y después cambiaremos de directorio al directorio `clases/`
+
 # ```repl
+# (@v1.6) pkg> activate .
+#   Activating environment at `~/Documents/4-Clases/46-TemasSelectos/2022-1/Project.toml`
+#
 # julia> cd("clases")   # Cambiamos al directorio ./clases/
 # ```
 
-# Una vez en el directorio correcto, *cargaremos* `Literate`:
+# Ahora *cargaremos* la paquetería `Literate`:
 #
 # ```julia
 # julia> using Literate
 # ```
 
-# Finalmente, generaremos a partir del archivo fuente ---en este caso "11-JuliaBasico.jl"---
+# Finalmente, generaremos a partir del archivo fuente ---en este caso "02-IntrodPkg.jl"---
 # el Jupyter notebook (con extensión `.ipynb`).
 
 # ```julia
-# julia> Literate.notebook("11-JuliaBasico.jl", execute=false)
-# [ Info: generating notebook from `~/Documents/4-Clases/46-TemasSelectos/2021-2/clases/11-JuliaBasico.jl`
-# [ Info: writing result to `~/Documents/4-Clases/46-TemasSelectos/2021-2/clases/11-JuliaBasico.ipynb`
-# "/Users/benet/Documents/4-Clases/46-TemasSelectos/2021-2/clases/11-JuliaBasico.ipynb"
+# julia> Literate.notebook("02-IntrodPkg.jl", execute=false)
+# [ Info: generating notebook from `~/Documents/4-Clases/46-TemasSelectos/2022-1/clases/02-IntrodPkg.jl`
+# [ Info: writing result to `~/Documents/4-Clases/46-TemasSelectos/2022-1/clases/02-IntrodPkg.ipynb`
+# "/Users/benet/Documents/4-Clases/46-TemasSelectos/2022-1/clases/02-IntrodPkg.ipynb"
 # ```
 
-# La instrucción anterior ejecuta la función `notebook`, de la paquetería `Literate`
-# y genera el archivo "11-JuliaBasico.ipynb" que es el notebook que corresponde
-# al archivo "11-JuliaBasico.jl". En este caso hemos usado el parámetro (opción) `execute=false` para
+# La instrucción anterior ejecuta la función `notebook`, que está dentro de la paquetería `Literate`
+# y genera el archivo "02-IntrodPkg.ipynb" que es el notebook que corresponde
+# al archivo "02-IntrodPkg.jl". En este caso hemos usado el parámetro (opción) `execute=false` para
 # **no** se ejecute el código que puede haber dentro del archivo. Esto es útil, en el contexto
 # del curso, ya que si hay *errores* éstos impiden que se genere el notebook.
 #
-# Vale la pena notar que el archivo `.jl` permite generar celdas pueden ser de código,
+# Vale la pena notar que el archivo `.jl` permite generar celdas que pueden ser de código,
 # o en Markdown, y pueden también incluir ecuaciones, imágenes, etc. Por esto,
 # es **muy** recomendable leer la [documentación](https://fredrikekre.github.io/Literate.jl/v2/)
 # de `Literate`, lo que les ayudará en particular a formatear los archivos `.jl` que
 # enviarán con las tareas resueltas.
 
-# Usaremos la paquetería `IJulia` para abrir el notebook, en este caso, `10-Pkg.ipynb`, y de
+# Usaremos la paquetería `IJulia` para abrir el notebook, en este caso, `02-IntrodPkg.ipynb`, y de
 # hecho poderlo explotar.
