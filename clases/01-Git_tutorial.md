@@ -30,7 +30,7 @@ En este ejemplo, se ejecutará la siguiente orden:
 
  <img src="imagenes/Tutorial/clonar_3.png" alt="alt text" width="800" height="400"/>
 
-Después iremos a la carpeta donde esta nuestro repositorio que acabamos de clonar y entraremos en ella(en este caso ejecuto `cd 2021-2\_TSelecFisComp-1/` para este fin).
+Después iremos a la carpeta donde esta nuestro repositorio que acabamos de clonar y entraremos en ella(en este caso ejecuto `cd 2021-2_TSelecFisComp-1/` para este fin).
 
 Posteriormente se ejecuta lo siguiente:
 
@@ -94,7 +94,7 @@ Dentro de la carpeta tareas crearás una carpeta con tu nombre, apellidos o nomb
 
   <img src="imagenes/Tutorial/tarea_4.png" alt="alt text" width="800" height="500"/>
 
-Y dentro de ésta copiarás el archivo con extensión .jl donde tienes tu tarea. **Ojo: no necesitamos ni los ipybn, ni .jpg, ni .png, etc. Que resultan como resultado de los ejercicios. Solo es necesario subir el .jl donde tienes el código e imagenes que se agreguen al trabajo de forma de apoyo, sólo si es absolutamente necesario para el desarrollo de su tarea**:
+Y dentro de ésta copiarás el archivo con extensión .jl donde tienes tu tarea. **Ojo: no necesitamos ni los ipybn, ni .jpg, ni .png, etc. Que resultan como resultado de los ejercicios. Sólo es necesario subir el .jl donde tienes el código e imagenes que se agreguen al trabajo de forma de apoyo, y solamente si es si es absolutamente necesario para el desarrollo de su tarea**:
 
   <img src="imagenes/Tutorial/tarea_3.png" alt="alt text" width="800" height="500"/>
 
@@ -114,13 +114,13 @@ Ahora realizaremos un commit con los cambios como se ve en la imagen:
 
 En este punto, es **muy importante recordar el nombre del fork**, además debes estar en el branch que creaste para esta tarea, si lo haces desde main tendrás problemas. Para subir los archivos agregados a tu fork en GitHub, será necesario ejecutar la siguiente línea:
 
-`git push mifork\_2`
+`git push mifork_2 Tarea_1`
 
 donde *mifork_2* es el nombre del fork que hemos escogido.
 
 <img src="imagenes/Tutorial/tarea_8.png" alt="alt text" width="800" height="500"/>
 
-En caso de que salté un error relacionado con `upstream`o algo parecido, sólo es necesario ejecutarlo una vez y listo.
+En caso de que salte un error relacionado con `upstream`o algo parecido, sólo es necesario ejecutarlo una vez y listo.
 
 Hasta este punto sólo se ha subido a nuestro fork en GitHub pero aún no ha sido agregado al repositorio del curso.
 
@@ -128,22 +128,22 @@ Ahora si entras a tu fork en la web verás esta imagen, nota que el símbolo que
 
 <img src="imagenes/Tutorial/tarea_9.png" alt="alt text" width="800" height="400"/>
 
-Nos mandará a una página donde es opcional agregar un mensaje para después subir el **pull request** que se ve de esta forma, nota que sólo cambia un archivo, esto se ve donde dice `Files changes`.
+Nos mandará a una página donde es opcional agregar un mensaje para después subir el **pull request** que se ve de esta forma, nota que sólo cambia un archivo, esto se ve donde dice `Files changed`.
 <img src="imagenes/Tutorial/tarea_10.png" alt="alt text" width="800" height="400"/>
 
-También observa que el archivo esta en la carpeta adecuada, en este caso `tareas/RamirezCastro/`, lo que implica que la tareas original no se ve afectada y tu trabajas en tu propia carpeta. 
+También observa que el archivo está en la carpeta adecuada, en este caso `tareas/RamirezCastro/`, lo que implica que la tareas original no se ve afectada y tu trabajas en tu propia carpeta. 
 
 <img src="imagenes/Tutorial/tarea_11.png" alt="alt text" width="800" height="400"/>
 
-Como te diste cuenta es importante el nombre que le des al fork y siempre debes tener presente la rama en la que estás, **para cada tarea diferente crea una rama diferente**, en este caso durante esta tarea solo se necesita trabajar en esta rama.
+Como te diste cuenta es importante el nombre que le des al fork y siempre debes tener presente la rama en la que estás, **para cada tarea diferente crea una rama diferente**, en este caso durante esta tarea sólo se necesita trabajar en esta rama.
 
 ## 4. Subir avances de la tarea
 
-Ahora para subir avances  (yo realicé un pequeño cambio en el archivo que subí) sólo es necesario hacer un  `git add ...` y un `git commit -am ...` , realizas el `git push mifork_2 Tarea_1` igual que la vez anterior y eso es todo, ya esta en el repositorio del curso como un nuevo cambio al pull request que subiste!!!
+Ahora para subir avances  (yo realicé un pequeño cambio en el archivo que subí) sólo es necesario hacer un  `git add ...` y un `git commit -am ...` , realizas el `git push mifork_2 Tarea_1` igual que la vez anterior y eso es todo, ya está en el repositorio del curso como un nuevo cambio al pull request que subiste!!!
 
 <img src="imagenes/Tutorial/actualizar_1.png" alt="alt text" width="800" height="400"/>
 
-Si miras el pull request que esta en el repositorio de la clase tiene dos commits sin necesidad de ir a la web y dar otro click!!. Lo que esto significa es que tu rama es precisamente la actualización que se hace con el pull request al repositorio principal de la clase, con la consecuencia de que hagas ahí se subirá como tarea al hacer el `push`, y por eso ten cuidado qué editas :).
+Si miras el pull request que está en el repositorio de la clase tiene dos commits sin necesidad de ir a la web y dar otro click!!. Lo que esto significa es que tu rama es precisamente la actualización que se hace con el pull request al repositorio principal de la clase, con la consecuencia de que lo que hagas ahí se subirá como tarea al hacer el `push`, y por eso ten cuidado qué editas :).
 
 <img src="imagenes/Tutorial/actualizar_2.png" alt="alt text" width="800" height="400"/>
 
