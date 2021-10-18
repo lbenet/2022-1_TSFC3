@@ -8,10 +8,6 @@
 # ## Motivación
 
 #-
-# Aquí, describiremos brevemente qué es y cómo implementar la
-# aritmética de intervalos.
-
-#-
 # Básicamente, la aritmética de intervalos es una aritmética de
 # desigualdades. Esto es, buscamos *acotar* la respuesta exacta
 # a través de una cota inferior y de una superior, las cuales
@@ -31,12 +27,13 @@
 # longitud de sus lados $a=3.1\pm 0.2$ y $b=10\pm 0.1$. Estas
 # mediciones las podemos interpretar como desigualdades,
 # $2.9 \le a \le 3.3$, $9.9 \le b \le 10.1$, de donde obtenemos
-# $28.71 = 2.9\cdot 9.9 \le A \le 33.33 = 3.3 \cdot 10.1$.
+# $28.71 = 2.9\cdot 9.9 \le A \le 33.33 = 3.3 \cdot 10.1$. Esto mismo
+# lo podemos escribir como $A=31.02\pm 2.31$.
 
 # De manera equivalente, podemos pensar los lados del rectángulo
 # como intervalos, $[a]=[3.1,3.3]$ y $[b]=[9.9, 10.1]$, y el
 # el área del triángulo como $[A] = [a]\cdot [b]$. La aritmética
-# de intervalos justifica este tipo de extensión.
+# de intervalos justifica esta extensión.
 
 #-
 # ## Intervalos como conjuntos
@@ -78,27 +75,36 @@
 #-
 # Dado que son conjuntos, los elementos de $\mathbb{IR}$ heredan
 # las relaciones naturales entre conjuntos, esto es, las operaciones
-# $=$, $\subseteq$, $\subset$, que se definen como:
+# $=$, $\subseteq$, $\subset$, ⪽ (está en el interior), que se definen como:
 # ```math
 # \begin{align*}
 # [a] = [b] & \Leftrightarrow  \underline{a}=\underline{b}
-#     \textrm{ and } \overline{a}=\overline{b},\\
-# [a] \subseteq [b] & \Leftrightarrow  \underline{a}\le \underline{b}
-#     \textrm{ and } \overline{a} \le\overline{b},\\
-# [a] \subset [b] & \Leftrightarrow  [a] \subseteq [b] \textrm{ and } [a] \neq [b],\\
-# [a] \subsetdot [b] & \Leftrightarrow  \underline{a} < \underline{b}
-#     \textrm{ and } \overline{a} < \overline{b},\\
+#     \textrm{ y } \overline{a}=\overline{b},\\
+# [a] \subseteq [b] & \Leftrightarrow  \underline{b}\le \underline{a}
+#     \textrm{ y } \overline{a}\le\overline{b},\\
+# [a] \subset [b] & \Leftrightarrow  [a] \subseteq [b] \textrm{ y } [a] \neq [b],\\
+# [a] ⪽ [b] & \Leftrightarrow  \underline{b} < \underline{a}
+#     \textrm{ y } \overline{a} < \overline{b},\\
 # \end{align*}
 # ```
 
 #-
 # Podemos *ordenar* parcialmente el conjunto $\mathbb{IR}$ de distintas formas.
 # Una de éstas es preservando el orden natural de los números reales,
-# a través de $\le$
+# a través de $\le$, de la siguiente forma:
 # ```math
 # \begin{equation*}
-# [a] \le [b] \Leftrightarrow \underline{a}\le\underline{b} \textrm{ and }
+# [a] \le [b] \Leftrightarrow \underline{a}\le\underline{b} \textrm{ y }
 # \overline{a}\le\overline{b}.
+# \end{equation*}
+# ```
+#
+# Vale la pena notar que la definición anterior se puede formular como el
+# conjunto
+# ```math
+# \begin{equation*}
+# [a] \le [b] = \left\{ (\forall a\in [a] \ \exists b\in[b]) \textrm{, y }
+# (\forall b\in [b] \ \exists a\in[a]) : a\le b \right\}.
 # \end{equation*}
 # ```
 # El orden así definido es parcial, ya que se puede mostrar que hay intervalos en
@@ -109,10 +115,10 @@
 # $\underline{b}\leq a \leq \overline{b}$.
 
 #-
-# Podemos extender las nociones de conjuntos $\cup$ y $\cap$ a $\mathbb{IR}$,
-# aunque ambas requieren ciertos ajustes. Por ejemplo, la unión de dos
+# Podemos extender las nociones de unión e intersección de conjuntos, $\cup$ y $\cap$,
+#  a $\mathbb{IR}$, # aunque ambas requieren ciertos ajustes. Por ejemplo, la unión de dos
 # intervalos puede no definir un intervalo cuando los dos intervalos están
-# suficientemente separados (disjuntos). Usamos el concepto de *hull* (cáscara) para
+# suficientemente separados (son disjuntos). Usamos el concepto de *hull* (cáscara) para
 # resolver esta situación
 # ```math
 # \begin{equation*}
@@ -145,18 +151,35 @@
 # \textrm{mig}([a]) & = \min\left\{ |x|: x\in [a]\right\}, \;\textrm{mignitud de }a.\\
 # \end{align*}
 # ```
-# Las dos últimas funciones definen cuál es la máxima y mínima distancia del cero (origen)
+
+#-
+# Las dos últimas funciones definen cuál es la distancia máxima y mínima del cero (origen)
 # a los elementos del intervalo $[a]$. Claramente, si $0\in[a]$, $\textrm{mig}(a)=0$.
 
 #-
-# Combinando las dos últimas funciones, podemos definir
+# Combinando las funciones anteriores, podemos definir
 # ```math
 # \begin{equation*}
-# \abs([a]) = \left\{ |x|: x\in[a] \right\} = [\textrm{mig}([a]), \textrm{mag}([a])].
+# \textrm{abs}([a]) = \left\{ |x|: x\in[a] \right\} = [\textrm{mig}([a]), \textrm{mag}([a])].
 # \end{equation*}
 # ```
 # Vale la pena notar que, al contrario de las funciones previamente definidas,
-# $\abs([a])$ es un intervalo.
+# $\textrm{abs}([a])$ es un intervalo.
+
+#-
+# Con las funciones anteriores podemos escribir
+# ```math
+# \begin{equation*}
+# [a] = [ \textrm{mid}([a])-\textrm{rad}([a]), \textrm{mid}([a])+\textrm{rad}([a])],
+# \end{equation*}
+# ```
+# de donde tenemos
+# ```math
+# \begin{equation*}
+# x \in [a] \Leftrightarrow |x-\textrm{mid}([a])|\le \textrm{rad}([a]).
+# \end{equation*}
+# ```
+
 
 #-
 # Usando las definiciones anteriores, podemos hacer de $\mathbb{IR}$ un espacio métrico,
@@ -169,7 +192,7 @@
 # De esta definición tenemos que $d([a],[b])=0$ si y sólo si $[a]=[b]$.
 
 #-
-# Usando la métrica se puede definir la noción de una secuencia convergente para intervalos,
+# Usando esta métrica se puede definir la noción de una secuencia convergente para intervalos,
 #
 # ```math
 # \begin{align*}
