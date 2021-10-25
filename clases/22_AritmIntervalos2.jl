@@ -104,7 +104,7 @@
 # = (-\infty, -1] \cup [1,\infty),
 # \end{equation*}
 # ```
-# es decir, $\mathbb{R}$ \\ $[-1,1]$.
+# es decir, $\mathbb{R}$ \\ $(-1,1)$.
 #
 # Claramente, para poder tener a cero en el denominador en una división, requerimos
 # la noción de infinito en $\mathbb{R}$.
@@ -116,7 +116,7 @@
 # punto, cuya proyección es el polo norte, que identificamos con el infinito (¡sin signo!).
 # Esta extensión, $\mathbb{R}^*$,  permite que podamos escribir $[c]$ en el ejemplo de arriba
 # como un *intervalo extendido*, $[1, -1]$, donde este intervalo se entiende como
-# los punto $x\ge 1$ o $x\le 1$.
+# los puntos en que $x\ge 1$ o $x\le 1$.
 #
 # La *extensión afín* consiste en dotar de signo a infinito en la extensión de los reales,
 # y se denota como $\overline{\mathbb{R}}$. Esto permite extender $\mathbb{R}$
@@ -133,7 +133,7 @@
 # $-\infty$ tendrán un inverso # bien definido y distinto en cada caso.
 #
 # Vale la pena mencionar que en cualquiera de estas extensiones, operaciones como
-# $(\pm)\infty+(\pm)\infty$, $(\pm)\infty/(\pm)\infty$, o $(\pm)0\cdot (\pm)\infty$ son
+# $(\pm)\infty-(\pm)\infty$, $(\pm)\infty/(\pm)\infty$, o $(\pm)0\cdot (\pm)\infty$ son
 # indefinidas.
 
 #-
@@ -143,12 +143,11 @@
 # intervalos.
 #
 # ```math
-# \begin{equation*}
 # [a]\div[b] = \begin{cases}
 # \begin{align*}
 # & [a] \times [1/\overline{b}, 1/\underline{b}], &\textrm{si }& 0\notin [b], \\
 # & [-\infty,+\infty], &\textrm{si }& 0\in[a] \textrm{ y } 0\in[b], \\
-# & [\overline{a}/\underline{b}], &\textrm{si }& \overline{a}<0 \textrm{ y } \underline{b}<\overline{b}=0, \\
+# & [\overline{a}/\underline{b}, +\infty], &\textrm{si }& \overline{a}<0 \textrm{ y } \underline{b}<\overline{b}=0, \\
 # & [\overline{a}/\underline{b},+\infty]\cup[-\infty,\overline{a}/\overline{b}], &\textrm{si }& \overline{a}<0 \textrm{ y } \underline{b}<0<\overline{b}, \\
 # & [-\infty, \overline{a}/\overline{b}], &\textrm{si }& \overline{a}<0 \textrm{ y } 0=\underline{b}<\overline{b}, \\
 # & [-\infty, \underline{a}/\underline{b}], &\textrm{si }& 0<\underline{a} \textrm{ y } \underline{b}<\overline{b}=0, \\
@@ -157,7 +156,6 @@
 # & [\emptyset], &\textrm{si }& 0\notin [a] \textrm{ y } [b]=[0,0].\\
 # \end{align*}
 # \end{cases}
-# \end{equation*}
 # ```
 
 #-
