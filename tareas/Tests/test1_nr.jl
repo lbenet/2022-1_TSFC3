@@ -2,7 +2,7 @@
 
 using Test
 
-include("../intervalos.jl")
+# include("../intervalos.jl")
 
 using .Intervalos
 
@@ -13,7 +13,7 @@ b = Intervalo(1, 3)
 c = Intervalo(BigFloat("0.1"), big(0.1))
 d = Intervalo(-1, 1)
 emptyFl = intervalo_vacio(Float64)
-emptyB = intervalo_vacio(Float64)
+emptyB = intervalo_vacio(BigFloat)
 
 @testset "Creación de intervalos" begin
     @test typeof(a) == Intervalo{Float64}
@@ -28,15 +28,8 @@ emptyB = intervalo_vacio(Float64)
     @test getfield(c, :infimo) == BigFloat("0.1")
     @test getfield(c, :supremo) == big(0.1)
 
-    @test isinf(getfield(emptyFl, :infimo))
-    @test isinf(getfield(emptyFl, :supremo))
-    @test signbit(getfield(emptyFl, :infimo)) == 0
-    @test signbit(getfield(emptyFl, :supremo)) == 1
-
-    @test isinf(getfield(emptyB, :infimo))
-    @test isinf(getfield(emptyB, :supremo))
-    @test getfield(emptyB, :infimo) == Inf
-    @test getfield(emptyB, :supremo) == -Inf
+    @test typeof(emptyFl) == Intervalo{Float64}
+    @test typeof(emptyB) == Intervalo{BigFloat}
 
     @test u == Intervalo(1.0)
     @test z == Intervalo(0.0)
@@ -50,10 +43,12 @@ end
     @test emptyFl == emptyB
     @test a ⊆ a
     @test a ⊆ b
+    @test emptyFl ⊆ b
     @test b ⊇ a
     @test c ⊆ c
     @test !(c ⊆ b) && !(b ⊆ c)
     @test a ⪽ b
+    @test emptyFl ⪽ b
     @test !(c ⪽ c)
     @test a ∪ b == b
     @test a ⊔ b == b
@@ -69,18 +64,25 @@ end
 end
 
 @testset "Operaciones aritméticas" begin
+    @test emptyFl + z == emptyFl
     @test z + u == +u
     @test z - u == -u
     @test b + 1 == 1.0 + b == Intervalo(2, 4)
     @test 2*(a - 2) == d
     @test c - 0.1 !== z
+    @test emptyFl * z == emptyFl
     @test 0.1 * u == Intervalo(0.1, 0.1)
     @test d * 0.1 == Intervalo(-0.1, 0.1)
     @test d * (a + b) ⊆ d*a + d*b
     @test d^2 == Intervalo(0, 1)
+    @test emptyB^2 == emptyB
+    @test emptyFl^3 == emptyFl
     @test d*d == d
     @test d^3 == d
     @test d^4 == d^2
+    @test a / emptyFl == emptyFl
+    @test emptyB / c == emptyB
+    @test emptyFl / emptyFl == emptyFl
     @test u/a == inv(a)
     @test 1 ∈ a/a
     @test 1/a == inv(a)
