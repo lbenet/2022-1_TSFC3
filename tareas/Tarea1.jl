@@ -38,7 +38,8 @@
 # ### Ejercicio 2: Tests
 #
 # Asegúrense que lo desarrollado en el Ejercicio 1 *pase* las pruebas que se encuentran en el archivo
-# `tareas/Tests/test1_nr.jl`. Para verificar esto, lo que deben hacer es (desde el REPL)
+# `tareas/Tests/test1_nr.jl`. Para verificar esto, lo que deben hacer es (desde el REPL) en el directorio
+# principal del repositorio,
 # ```julia
 #     include("tareas/SuDirTarea1/intervalos.jl")
 #     include("tareas/Tests/test1_nr.jl")
