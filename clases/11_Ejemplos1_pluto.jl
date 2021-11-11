@@ -30,7 +30,14 @@ La pregunta es cuánto vale el producto punto de estos vectores.
 """
 
 # ╔═╡ 3176f352-ff43-448f-9023-39dc9a0e16f1
+begin
+	
+    a = [1e20, 2.0, -1e22, 1e13, 2111, 1e16]
+    b = [1e20, 1223, 1e18, 1e15, 3, -1e12]
+end
 
+# ╔═╡ 091994f0-8339-4aa1-9c66-068d8d301855
+sum(a .* b)
 
 # ╔═╡ c7744601-73df-47ff-8aa6-8e73ee68d6b5
 md"""
@@ -151,7 +158,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 Gaston = "~1.0.4"
-PlutoUI = "~0.7.9"
+PlutoUI = "~0.7.14"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -163,9 +170,9 @@ uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random"]
-git-tree-sha1 = "9995eb3977fbf67b86d0a0a0508e83017ded03f2"
+git-tree-sha1 = "a851fec56cb73cfdf43762999ec72eff5b86882a"
 uuid = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-version = "3.14.0"
+version = "3.15.0"
 
 [[ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
@@ -199,6 +206,17 @@ git-tree-sha1 = "ef62952980d19c98d00bd44d2266a98f8e9c7178"
 uuid = "4b11ee91-296f-5714-9832-002c20994614"
 version = "1.0.4"
 
+[[HypertextLiteral]]
+git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.0"
+
+[[IOCapture]]
+deps = ["Logging", "Random"]
+git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
+uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+version = "0.2.2"
+
 [[InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -228,15 +246,15 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
+git-tree-sha1 = "9d8c00ef7a8d110787ff6f170579846f776133a9"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.0.3"
+version = "2.0.4"
 
 [[PlutoUI]]
-deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
-git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
+deps = ["Base64", "Dates", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
+git-tree-sha1 = "d1fb76655a95bf6ea4348d7197b22e889a4375f4"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.9"
+version = "0.7.14"
 
 [[Printf]]
 deps = ["Unicode"]
@@ -251,6 +269,9 @@ git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
 version = "1.2.2"
 
+[[SHA]]
+uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
@@ -262,10 +283,9 @@ uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
-[[Suppressor]]
-git-tree-sha1 = "a819d77f31f83e5792a76081eee1ea6342ab8787"
-uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
-version = "0.2.0"
+[[UUIDs]]
+deps = ["Random", "SHA"]
+uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
@@ -276,8 +296,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 # ╠═1db04a08-4ae6-4b12-b057-dfcac26a2924
 # ╟─41ecfebc-0820-11ec-1e5f-a77ecab1f5d4
 # ╠═faad2468-31a4-49f0-8513-80125a3f526d
-# ╠═351f0204-4144-4d8c-bdd9-88165c45efdd
+# ╟─351f0204-4144-4d8c-bdd9-88165c45efdd
 # ╠═3176f352-ff43-448f-9023-39dc9a0e16f1
+# ╠═091994f0-8339-4aa1-9c66-068d8d301855
 # ╠═c7744601-73df-47ff-8aa6-8e73ee68d6b5
 # ╠═afab0fab-2b25-4cd6-9b62-654aeec8e2f2
 # ╠═b81f6636-92f9-4d38-8369-b0a20c334fb6
