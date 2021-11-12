@@ -1,4 +1,4 @@
-# Tests de la Tarea1 (`intervalos.jl`), sin usar redondeo.
+# Tests de la Tarea2 (`intervalos.jl`), incluyendo el redondeo.
 
 using Test
 

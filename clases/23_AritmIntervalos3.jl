@@ -1,5 +1,5 @@
 #-
-# # Aritmética de intervalos: calculando con conjuntos 2
+# # Aritmética de intervalos: calculando con conjuntos 3
 
 #-
 # > Ref: W. Tucker, Validated Numerics: A Short Introduction to Rigorous Computations, Princeton University Press, 2011
