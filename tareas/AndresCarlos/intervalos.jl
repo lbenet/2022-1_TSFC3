@@ -284,6 +284,13 @@ end
 n=2
 
 
+# ╔═╡ ac97b423-45cd-45d5-94be-528fc40f3f86
+begin
+	I9=intervalo(0.0,1.0) 
+	I8=intervalo(-Inf, Inf) 
+	*(I8,I9)
+end
+
 # ╔═╡ Cell order:
 # ╠═7dfae42a-4211-11ec-3983-29e1cea73a3b
 # ╠═b6be6e7a-3ae9-48ba-abf6-bd04e889164b
@@ -309,3 +316,4 @@ n=2
 # ╠═09b7fdad-8d3d-4ad5-88ea-86c6d266f250
 # ╠═92b5da99-b067-4b68-8bff-2b15090df7b9
 # ╠═e10f41f4-739d-4f30-8b85-b8b87bc02635
+# ╠═ac97b423-45cd-45d5-94be-528fc40f3f86
