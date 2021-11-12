@@ -3,13 +3,12 @@
 
 module Intervalos
 
-export Intervalo;   export intervalo_vacio;   export isinterior;   export ⪽;   export hull;   export ⊔
+export Intervalo;   export intervalo_vacio;   export isinterior;   export ⪽;   export hull;   export ⊔;   export inv
 
 # ╔═╡ e10c21a0-3c58-11ec-0af3-41dfd66e5d26
 struct Intervalo{T<:Real}
 	
-	infimo::T
-	supremo::T
+	infimo::T;   supremo::T
 	
 # To promote every subtype of Real to AbstractFloat, and then promote them to the one with more hierarchy
 	function Intervalo(infimo::T1, supremo::T2) where {T1<:Real, T2<:Real}
@@ -48,17 +47,6 @@ struct Intervalo{T<:Real}
 		end
 	end
 end
-
-# ╔═╡ a5ae2693-3721-46d3-9eb8-cd8991257327
-#=begin   ### My previous definition of the empty interval
-	function intervalo_vacio(arg)
-		if arg == Float64
-			return Intervalo(1.7976931348623157e308, -1.7976931348623157e308)
-		elseif arg == BigFloat
-			return Intervalo(1.7976931348623157e308, -1.7976931348623157e308)
-		end
-	end
-end=#   ### Initially it was inside the struct
 
 # ╔═╡ ad3ab7ec-de0f-4a25-8acd-611e3db4eb12
 begin   ### [a,b] == [c,d] ⇒ a = b && b = d
@@ -155,36 +143,6 @@ begin   ### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
 	end
 end
 
-# ╔═╡ 829eb20a-b46a-4f54-a20c-8831802e2fa1
-begin   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) == false
-	function ⊂(I1::Intervalo, I2::Intervalo)
-		if (I1.infimo == -Inf) && (I1.supremo == Inf)   ### Empty I case
-			true
-		elseif I2.infimo ≤ I1.infimo && I1.supremo ≤ I2.supremo
-			if I2.infimo == I1.infimo && I1.supremo == I2.supremo
-				false
-			else
-				true
-			end
-		else
-			false
-		end
-	end
-	function ⊃(I1::Intervalo, I2::Intervalo)
-		if (I2.infimo == -Inf) &&  (I2.supremo == Inf)   ### Empty I case
-			true
-		elseif I1.infimo ≤ I2.infimo && I2.supremo ≤ I1.supremo
-			if I1.infimo == I2.infimo && I2.supremo == I1.supremo
-				false
-			else
-				true
-			end
-		else
-			false
-		end
-	end
-end   ### Note: There were no methods for this symbols
-
 # ╔═╡ e94fbbe6-c740-4fa8-8c44-5d009a1d6c34
 begin   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 	function isinterior(I1::Intervalo, I2::Intervalo)
@@ -196,15 +154,6 @@ begin   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 			false
 		end
 	end
-	#=function ⪾(I1::Intervalo, I2::Intervalo)
-		if (I2.infimo == -Inf) && (I2.supremo == Inf)   ### Empty I case
-			true
-		elseif I1.infimo < I2.infimo && I2.supremo < I1.supremo
-			true
-		else
-			false
-		end
-	end=#
 end
 
 # ╔═╡ 4a501677-af00-43a7-9abd-8fba8c1774ec
@@ -355,9 +304,12 @@ begin   ### [a,b]^n = x^n for all x ∈ [a,b]
 	end
 end
 
-# ╔═╡ 2f42f9e7-85a0-4364-a526-5b83907778a0
-function inv(I::Intervalo)
-	return 1/I
+# ╔═╡ e05b819a-0881-4c84-a997-6ddf20bf2425
+begin
+	import Base: inv
+	function inv(I::Intervalo)
+		1/I
+	end
 end
 
 # ╔═╡ Cell order:
@@ -379,6 +331,6 @@ end
 # ╠═45297b5b-5d4d-43bc-8a80-c8f03aa8b905
 # ╠═a18c8e6a-f815-488c-b155-ba8f1f6c5e1c
 # ╠═81728a49-6e73-4a13-8ddc-1e34f902df39
-# ╠═2f42f9e7-85a0-4364-a526-5b83907778a0
+# ╠═e05b819a-0881-4c84-a997-6ddf20bf2425
 
 end
