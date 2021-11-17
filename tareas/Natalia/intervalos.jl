@@ -1,11 +1,11 @@
 ### A Pluto.jl notebook ###
 # v0.16.1
 
-using Markdown
-using InteractiveUtils
+module Intervalos
 
-# ╔═╡ 2f4f8fe0-43f3-11ec-0ab9-873924050de7
-begin
+import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. :+; import Base. -; import Base. *; import Base. /; import Base. ^; 
+
+export Intervalo; export intervalo_vacio; export isint; export hull; 
 
 """
 Intervalo.
@@ -19,86 +19,75 @@ struct Intervalo{T <: Real}
     infimo :: T
     supremo :: T
 	
-	#Si el Intervalo no está correctamente definido: 
-		
-    function Intervalo(infimo::T, supremo::T) where {T<:Real}
-			@assert infimo ≤ supremo 
-            return new{T}(infimo, supremo)
-    end
-		
-	#Si el supremos = infimo (Intervalo[a,a]):
 	
-	#=function Intervalo(infimo::T, supremo::T) where {T<:Real}
+	function Intervalo(infimo::T, supremo::T) where {T<:Real}
 			
-			if supremo == infimo 	
+			if  infimo == Inf 
 				
-				return new{T}(supremo, supremo) 
-			else 
+				return new{T}(Inf,-Inf) 
+			
+			elseif infimo ≤ supremo
 	 
 				return new{T}(infimo, supremo)
+			else 
+				 Main.throw(Main.AssertionError("No se admite infimo > supremo"))
 			end
-	end =#
+	end 
+	
+            #Si ingresamos un sólo parámetro (Intervalo[a]):
 		
-	#Si ingresamos un sólo parámetro (Intervalo[a]):
-		
-    function Intervalo(real::T) where {T<:Real}
-            return new{T}(real, real)
-    end	 
+            function Intervalo(real::T) where {T<:Real}
+                     
+                     return new{T}(real, real)
+            
+            end	 
 end 
+
    # Para promover los argumentos de mi intervalo: 
 	
    Intervalo(infimo::T, supremo::R) where{T<:Real, R<:Real} =
    Intervalo(promote(infimo, supremo)...)
-end
 
-# ╔═╡ d091ba0b-b93d-4c97-9a92-a0be5ff52fda
-#Intervalo vacío 
+
+#Intervalo vacio
 
 function intervalo_vacio(T::Type)
 
-            return Intervalo(T(NaN))
+            return Intervalo(Inf,-Inf)
+		
+   end
+
+# Intervalo vacio otra vez 
+
+function intervalo_vacio(A::Intervalo)
+
+            return Intervalo(Inf,-Inf)
+		
 end
 
-# ╔═╡ feaf749b-6c4b-4059-a767-95d16774e9e9
-# UNIÓN ∪ 
+#########################
 
-#Sólo funciona cuando los intervalos NO son separados
+#OPERACIONES DE CONJUNTOS  
 
-begin 
-	        import Base. :∪
-            function ∪(A::Intervalo, B::Intervalo) 
-	
-			I = min(A.infimo, B.infimo)
-	        S = max(A.supremo, B.supremo)
-	
-            return Intervalo(I, S)
-end
-end 
+########################
 
-# ╔═╡ 1504550f-aabf-4470-8fff-399be3618658
 # Hull ⊔ 
 
 #Sólo funciona cuando los intervalos NO son separados
 
-begin 
-	        import Base. :⊔
-            function ⊔(A::Intervalo, B::Intervalo) 
+            function hull(A::Intervalo, B::Intervalo) 
 	
-			I = min(A.infimo, B.infimo)
+	        I = min(A.infimo, B.infimo)
 	        S = max(A.supremo, B.supremo)
 	
-            return Intervalo(I, S)
-end
-end 
+                        return Intervalo(I, S)
+            end
 
-# ╔═╡ 6bd6f710-2ddd-4514-8fbf-9dc49b3bee58
+const ⊔ = hull
+
 # INTERSECCIÓN ∩ 
 
-begin
-	
-	import Base. :∩ 
-	
-    function ∩(A::Intervalo, B::Intervalo) 
+                function ∩(A::Intervalo, B::Intervalo) 
 	   
 	   #Caso  Intersección vacía para I1 = [a,b] I2 =[c,d] con a < c 
 	
@@ -121,158 +110,140 @@ begin
 		return Intervalo(I,S)
 	end 
 end
-end 
 
-# ╔═╡ 255eae6c-d39d-4801-a721-8c8469ddb247
 # Pertenece a (∈)
-begin
-	import Base. :∈
-    
-	function ∈(x::Real, I::Intervalo)
-	
-    if I.infimo ≤ x && x ≤ I.supremo
-        
-		return true
-    else
-        
-		return false
-    end
-end
-end
 
-# ╔═╡ 75ccfd4f-f2fd-427c-acaf-ef655b7a91e0
-# Contención propia (⪽)
-begin 
+            
+            function ∈(x::Real, I::Intervalo)
 	
-	import Base. :⪽
-	
-    function ⪽(A::Intervalo, B::Intervalo)
-	
-    if A.infimo > B.infimo && B.supremo > A.supremo
-        
-		return true
-    else
-        return false
-    end
-end
-end
+                return I.infimo ≤ x && x ≤ I.supremo
+            
+            end
 
-# ╔═╡ 65be1970-66d8-4084-9c3c-2382c5f9687a
-# Contención propia (⊂)
-begin 
-	
-	import Base. :⊂
-	
-    function ⊂(A::Intervalo, B::Intervalo)
-	
-    if A.infimo > B.infimo && B.supremo > A.supremo
-        
-		return true
-    else
-        return false
-    end
-end
-end
+# Para ⪽
 
-# ╔═╡ 898d8b66-05a7-46a8-8024-e55687d06bc6
+           function isint(A::Intervalo, B::Intervalo)
+	
+               return A.infimo > B.infimo && B.supremo > A.supremo
+           
+           end
+
+const ⪽ = isint
+
 # Contención impropia (⊆)
 
-begin
-	import Base. :⊆
+        function ⊆(A::Intervalo, B::Intervalo)
 	
-    function ⊆(A::Intervalo, B::Intervalo)
-	
-    if A.infimo ≥ B.infimo && B.supremo ≥ A.supremo
+             if A.infimo ≥ B.infimo && B.supremo ≥ A.supremo
         
 		return true
-    else
-        return false
-    end
-end
-end 
+             else 
+		return false
+             end
+      
+         end
 
-# ╔═╡ fbd3988c-898b-4cc0-8be9-a4d39d78e2bb
+
 ##Igualdad de conjuntos ==
 
-begin 
-	import Base. :(==)
-	function ==(A::Intervalo, B::Intervalo)
+       
+       function ==(A::Intervalo, B::Intervalo)
 	
-    if A.infimo == B.infimo && A.supremo == B.supremo
-        
-		return true
-    else
-        return false
-    end
-end
+           return A.infimo == B.infimo && A.supremo == B.supremo
+
 end
 
-# ╔═╡ 09829aa1-1acc-408d-9666-842bead1700d
+#########################
+
+#OPERACIONES ARITMÉTICAS 
+
+########################
+
 #Suma de intervalos +
 
-begin
-	import Base. :+
+	
 	
 	+(A::Intervalo, B::Intervalo)=Intervalo(A.infimo + B.infimo, A.supremo + B.supremo) 
 	+(A::Intervalo, x::Real) = A + Intervalo(x) #Caso [a,b] + x
 	+(x::Real, A::Intervalo) = Intervalo(x) + A #Caso x + [a,b]
-	+(A::Intervalo) = Intervalo(0,0) + A #Caso x + [a,b]
-end
+	+(A::Intervalo) = A #Caso x + [a,b]
 
-
-# ╔═╡ 85797823-9093-473f-870c-bd4685ada3b5
 #Resta de intervalos -
 
-begin
-	import Base. :-
+	
 	-(A::Intervalo, B::Intervalo)=Intervalo(A.infimo - B.supremo, A.supremo - B.infimo)
 	-(A::Intervalo, x::Real) = A - Intervalo(x) #Caso [a,b] - x 
 	-(x::Real, A::Intervalo) = Intervalo(x) - A #Caso x - [a,b]
-	-(A::Intervalo) = 0 - A #Caso x + [a,b]
-end
+	-(A::Intervalo) = Intervalo(-A.supremo, -A.infimo) #Caso x + [a,b]
 
-# ╔═╡ 668c3149-60ba-4d49-87b1-bfc376e30b42
+
 #Multiplicación de intervalos x
 
-begin
-	import Base. :*
+
+	
 	*(A::Intervalo, B::Intervalo)=Intervalo(min(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo),max(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo))
 	*(A::Intervalo, x::Real) = Intervalo(x*A.infimo,x*A.supremo) #Caso c*[a,b]
 	*(x::Real, A::Intervalo) = Intervalo(x*A.infimo,x*A.supremo) #Caso [a,b]*c
-end
 
-# ╔═╡ 337f69eb-51a1-42de-afb7-9e0b2dead2fa
+
 #División de intervalos -
 
-begin
-	import Base. :/
+
+	
 	/(A::Intervalo, B::Intervalo)=A*Intervalo(1/B.supremo,1/B.infimo)
 	/(x::Real, B::Intervalo)=x*Intervalo(1/B.supremo,1/B.infimo)
-end
+	/(A::Intervalo, x::Real)=A*Intervalo(1/x,1/x)
 
 
-# ╔═╡ ab59f640-7825-4482-b947-0e9537a5189f
 #Función inverso inv(a)
-begin
+
+
 	function inv(A::Intervalo)
-		I = 1*Intervalo(1/A.supremo,1/A.infimo)
+		I = Intervalo(1/A.supremo,1/A.infimo)
+	         return I
+                end
+
+
+#Función mag
+
+function mag(A::Intervalo)
+	I = max(abs(A.infimo),abs(A.supremo))
 	return I
-end
 end 
 
-# ╔═╡ Cell order:
-# ╠═2f4f8fe0-43f3-11ec-0ab9-873924050de7
-# ╠═d091ba0b-b93d-4c97-9a92-a0be5ff52fda
-# ╠═feaf749b-6c4b-4059-a767-95d16774e9e9
-# ╠═1504550f-aabf-4470-8fff-399be3618658
-# ╠═6bd6f710-2ddd-4514-8fbf-9dc49b3bee58
-# ╠═255eae6c-d39d-4801-a721-8c8469ddb247
-# ╠═75ccfd4f-f2fd-427c-acaf-ef655b7a91e0
-# ╠═65be1970-66d8-4084-9c3c-2382c5f9687a
-# ╠═898d8b66-05a7-46a8-8024-e55687d06bc6
-# ╠═fbd3988c-898b-4cc0-8be9-a4d39d78e2bb
-# ╠═09829aa1-1acc-408d-9666-842bead1700d
-# ╠═85797823-9093-473f-870c-bd4685ada3b5
-# ╠═668c3149-60ba-4d49-87b1-bfc376e30b42
-# ╠═337f69eb-51a1-42de-afb7-9e0b2dead2fa
-# ╠═ab59f640-7825-4482-b947-0e9537a5189f
+#Función mig
+
+function mig(A::Intervalo)
+	
+	if A == Intervalo(0,0)
+	    I = 0
+	else 
+		I = min(abs(A.infimo),abs(A.supremo))
+	end 
+	
+	return I 
+end
+
+# Potencias enteras y no negativas jeje 
+
+
+	function ^(A::Intervalo,n)
+	
+	if n == 0
+			
+	    I = Intervalo(1,1)
+			
+	elseif mod(n,2) == 0
+			    
+		I = Intervalo(mig(A)^n, mag(A)^n) #PAR
+	
+	else 
+		
+		I = Intervalo(A.infimo^n,A.supremo^n) #IMPAR
+			
+	end	
+	return I 
+end 
+
+
+end 
