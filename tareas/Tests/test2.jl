@@ -12,6 +12,7 @@ a = Intervalo(1.5, 2.5)
 b = Intervalo(1, 3)
 c = Intervalo(BigFloat("0.1"), big(0.1))
 d = Intervalo(-1, 1)
+f = Intervalo(prevfloat(Inf))
 emptyFl = intervalo_vacio(Float64)
 emptyB = intervalo_vacio(BigFloat)
 
@@ -46,6 +47,8 @@ end
     @test emptyFl ⊆ b
     @test b ⊇ a
     @test c ⊆ c
+    @test !(a ⊆ emptyFl)
+    @test !(emptyB ⊇ c)
     @test !(c ⊆ b) && !(b ⊆ c)
     @test a ⪽ b
     @test emptyFl ⪽ b
@@ -68,6 +71,10 @@ end
     @test z + z == Intervalo(prevfloat(0.0), nextfloat(0.0))
     @test u + z == u + 0.0
     @test z - u == 0.0-u
+    @test -u == Intervalo(-u.supremo, -u.infimo)
+    @test f + f !== intervalo_vacio(f)
+    @test f + f == Intervalo(f.infimo, Inf)
+    @test Inf ∈ f + f
     @test -u ⪽ z - u
     @test b + 1 == 1.0 + b == Intervalo(prevfloat(2.0), nextfloat(4.0))
     @test d ⪽ 2*(a - 2)
