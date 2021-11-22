@@ -198,9 +198,9 @@ plot!(a.lo:1/128:a.hi, f, lw=2, color=:red) # Dibujamos una aproximación de f(x
 # \begin{equation*}
 # R(f; [x]) \subseteq \bigcup_{i=1}^k F([x^{(i)}]) \subseteq F([x]),
 # \end{equation*}
-# $$
+# ```
 # y
-# $$
+# ```math
 # \begin{equation*}
 # \textrm{rad}\Big(\bigcup_{i=1}^k F([x^{(i)}])\Big) \leq \textrm{rad}\big(R(f; [x])\big) +
 # K\max_{i=1\dots k} \textrm{rad}\big([x^{(i)}]\big).
