@@ -20,37 +20,35 @@ struct Intervalo{T <: Real}
     #Si el Intervalo no está correctamente definido: 
 		
     function Intervalo(infimo::T, supremo::T) where {T<:AbstractFloat}
-	@assert infimo ≤ supremo 
-                I,S,_= promote(infimo, supremo, 1.0)
-
-                return new{T}(I, S)
+	
+                @assert infimo ≤ supremo 
+               
+                return new{T}(infimo, supremo)
     end
      
     #Si ingresamos un sólo parámetro (Intervalo[a]):
 		
      function Intervalo(real::T) where {T<:Real}
-                     r,_=promote(real,1.0)
-                return new{T}(r, r)
+                     
+                return new{T}(real, real)
             
-     end	 
-end 
+     end	
+ 
+     # Para promover los argumentos de mi intervalo
 
-# Para promover los argumentos de mi intervalo
-
-function Intervalo(infimo::T, supremo::R) where{T<:Real, R<:Real} 
+      function Intervalo(infimo::T, supremo::R) where{T<:Real, R<:Real} 
 
       I,S,_= promote(infimo, supremo, 1.0)
       return Intervalo(I,S)
 
 end 
-	
-#Intervalo(infimo::T, supremo::R) where{T<:Int64, R<:Int64} = Intervalo(promote(convert(Float64,infimo), convert(Float64,supremo))...)
 
+end 
 
 
 #########################
 
-#INTERVALO VACÍO 
+#######INTERVALO VACÍO#######
 
 #########################
 
@@ -88,7 +86,7 @@ end
 
 #########################
 
-#OPERACIONES DE CONJUNTOS  
+###OPERACIONES DE CONJUNTOS###  
 
 #########################
 
@@ -117,7 +115,6 @@ function ∪(A::Intervalo, B::Intervalo)
 
                  return Intervalo(I, S)
 end
-
 
 # Hull ⊔ 
 
@@ -232,7 +229,7 @@ const ⪽ = isint
 
 #########################
 
-#OPERACIONES ARITMÉTICAS 
+####OPERACIONES ARITMÉTICAS#### 
 
 ########################
 
