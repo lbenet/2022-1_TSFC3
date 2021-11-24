@@ -17,10 +17,15 @@ struct Intervalo{T<:Real}
 		return Intervalo(inf, sup)
 	end
 
-# To check that the interval satisfy the condition a ≤ b for Intervalo(a,b) ≡ [a,b]
+# To check that the interval satisfy the condition a ≤ b for Intervalo(a,b) ≡ [a,b]	
 	function Intervalo(infimo::T, supremo::T) where {T<:AbstractFloat}
-		@assert infimo ≤ supremo
-		return new{T}(infimo, supremo)
+		if isnan(infimo)
+			return new{T}(NaN, NaN)
+		elseif infimo ≤ supremo
+			return new{T}(infimo, supremo)
+		else
+			return "Undefined interval: a ≰ b for Intervalo(a,b)"
+		end
 	end
 
 # To allow that Intervalo(a) ≡ [a] → [a, a] also work
@@ -30,16 +35,28 @@ struct Intervalo{T<:Real}
 end
 
 # ╔═╡ d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
-begin   ### Last implementation of the empty interval
-	function intervalo_vacio(arg::T) where {T<:Real}
-		return Intervalo(Inf, Inf)
+begin   ### Empty interval
+	function intervalo_vacio()   ### Without argument
+		return Intervalo(NaN)
 	end
-	function intervalo_vacio(arg::I) where {I<:Intervalo}
-		return Intervalo(Inf, Inf)
+	function intervalo_vacio(arg::T) where {T<:Real}   ### A type Real 'number' arg
+		T₀ = promote_type(T, Float64)
+		return Intervalo(T₀(NaN), T₀(NaN))
 	end
-	function intervalo_vacio(arg)
-		T = promote_type(arg)
-		return Intervalo(T(Inf), T(Inf))
+	function intervalo_vacio(T::Type{<:Real})   ### A 'type' arg
+		T₀ = promote_type(T, Float64)
+		return Intervalo(T₀(NaN), T₀(NaN))
+	end
+	function intervalo_vacio(I::Intervalo{T}) where {T<:Real}   ### An 'Interval' arg
+		return Intervalo(T(NaN), T(NaN))
+	end
+end
+
+# ╔═╡ 707aaa8a-df8d-424a-8555-1e63eadd45a7
+begin   ### Checking if an interval I is the empty interval
+	import Base: isempty
+	function isempty(I::Intervalo)
+		return isnan(I.infimo)
 	end
 end
 
@@ -47,9 +64,12 @@ end
 begin   ### [a,b] == [c,d] ⇒ a = b && b = d
 	import Base: ==
 	function ==(I1::Intervalo, I2::Intervalo)
-		inf1, inf2 = promote(I1.infimo, I2.infimo)
-		sup1, sup2 = promote(I1.supremo, I2.supremo)
-		return (inf1 == inf2) && (sup1 == sup2)
+		if isempty(I1) && isempty(I2)   ### Empty interval cases
+			return true
+		else
+			inf1, inf2, sup1, sup2 = promote(I1.infimo, I2.infimo, I1.supremo, I2.supremo)
+			return (inf1 == inf2) && (sup1 == sup2)
+		end
 	end
 end
 
@@ -57,7 +77,7 @@ end
 begin   ### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
 	import Base: ⊆
 	function ⊆(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty I case
+		if isempty(I1)   ### Empty I case
 			return true
 		elseif (I2.infimo ≤ I1.infimo) && (I1.supremo ≤ I2.supremo)
 			return true
@@ -70,7 +90,7 @@ end
 # ╔═╡ 829eb20a-b46a-4f54-a20c-8831802e2fa1
 begin   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) == false
 	function ⊂(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty I case
+		if isempty(I1)   ### Empty I case
 			return true
 		elseif (I2.infimo ≤ I1.infimo) && (I1.supremo ≤ I2.supremo)
 			if (I2.infimo == I1.infimo) && (I1.supremo == I2.supremo)
@@ -83,7 +103,7 @@ begin   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) 
 		end
 	end
 	function ⊃(I1::Intervalo, I2::Intervalo)
-		if I2.infimo == Inf == I2.supremo   ### Empty I case
+		if isempty(I2)   ### Empty I case
 			return true
 		elseif (I1.infimo ≤ I2.infimo) && (I2.supremo ≤ I1.supremo)
 			if (I1.infimo == I2.infimo) && (I2.supremo == I1.supremo)
@@ -100,7 +120,7 @@ end   ### Note: There were no methods for this symbols
 # ╔═╡ e94fbbe6-c740-4fa8-8c44-5d009a1d6c34
 begin   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 	function isinterior(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty I case
+		if isempty(I1)   ### Empty I case
 			return true
 		elseif (I2.infimo < I1.infimo) && (I1.supremo < I2.supremo)
 			return true
@@ -126,11 +146,11 @@ end
 # ╔═╡ 313975d8-9c31-4217-a284-e4ffbd29563a
 begin   ### [a,b] ⊔ [c,d] = [min(a,c), max(b,d)]
 	function hull(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty interval cases
+		if isempty(I1)   ### Empty interval cases
 			return I2
-		elseif I2.infimo == Inf == I2.supremo
+		elseif isempty(I2)
 			return I1
-		elseif (I1.infimo == I2.infimo == Inf) && (I1.supremo == I2.supremo == Inf)
+		elseif isempty(I1) && isempty(I2)
 			return I1
 		else
 			m = min(I1.infimo, I2.infimo)
@@ -150,15 +170,15 @@ begin   ### [a,b] ∩ [c,d] ⇒ [max(a,c), min(b,d)]
 	import Base: ∩
 	function ∩(I1::Intervalo, I2::Intervalo)
 		if I1.infimo < I2.infimo && I1.supremo < I2.infimo   ### Disjoint intervals
-			return intervalo_vacio(0)
+			return intervalo_vacio()
 		elseif I2.infimo < I1.infimo && I2.supremo < I1.infimo
-			return intervalo_vacio(0)
-		elseif I1.infimo == Inf == I1.supremo   ### Empty interval cases
-			return intervalo_vacio(0)
-		elseif I2.infimo == Inf == I2.supremo
-			return intervalo_vacio(0)
-		elseif (I1.infimo == I2.infimo == Inf) && (I1.supremo == I2.supremo == Inf)
-			return intervalo_vacio(0)
+			return intervalo_vacio()
+		elseif isempty(I1)   ### Empty interval cases
+			return intervalo_vacio()
+		elseif isempty(I2)
+			return intervalo_vacio()
+		elseif isempty(I1) && isempty(I2)
+			return intervalo_vacio()
 		else   ### The rest of the cases
 			return Intervalo(max(I1.infimo,I2.infimo), min(I1.supremo,I2.supremo))
 		end
@@ -169,11 +189,11 @@ end
 begin   ### [a,b] ∪ [c,d] ⇒ [min(a,c), max(b,d)]
 	import Base: ∪
 	function ∪(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty interval cases
+		if isempty(I1)   ### Empty interval cases
 			return I2
-		elseif I2.infimo == Inf == I2.supremo
+		elseif isempty(I2)
 			return I1
-		elseif (I1.infimo == I2.infimo == Inf) && (I1.supremo == I2.supremo == Inf)
+		elseif isempty(I1) && isempty(I2)
 			return I1
 		elseif I1.infimo ≤ I2.infimo && I2.infimo ≤ I1.supremo   ### Normal cases
 			return Intervalo(I1.infimo, max(I2.supremo, I1.supremo))
@@ -209,6 +229,9 @@ begin   ### [a,b] - [c,d] = [a-d, b-c]
 	function -(I::Intervalo, r::Real)   ### [a,b] - x = [a-x, b-x]
 		return Intervalo(I.infimo-r, I.supremo-r)
 	end
+	function -(r::Real, I::Intervalo)   ### x - [a,b]= [x-b, x-a] ???
+		return Intervalo(r-I.supremo, r-I.infimo)
+	end
 	function -(I::Intervalo)   ### -[a,b] = [-b,-a]
 		return Intervalo(-(I.supremo), -(I.infimo))
 	end
@@ -218,9 +241,9 @@ end
 begin   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]
 	import Base: *
 	function *(I1::Intervalo, I2::Intervalo)
-		if I1.infimo == Inf == I1.supremo   ### Empty intervals cases
+		if isempty(I1)   ### Empty intervals cases
 			return I1
-		elseif I2.infimo == Inf == I2.supremo
+		elseif isempty(I2)
 			return I2
 		else   ### rest cases
 			p1 = I1.infimo*I2.infimo
@@ -231,7 +254,7 @@ begin   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]
 		end
 	end
 	function *(r::Real, I::Intervalo)   ### x*[a,b] = [x*a, x*b]
-		if I.infimo == Inf == I.supremo
+		if isempty(I)   ### Empty interval case
 			return I
 		else
 			if 0 ≤ r
@@ -242,7 +265,7 @@ begin   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]
 		end
 	end
 	function *(I::Intervalo, r::Real)   ### [a,b]*x = [a*x, b*x]
-		if I.infimo == Inf == I.supremo
+		if isempty(I)   ### Empty interval case
 			return I
 		else
 			if 0 ≤ r
@@ -260,12 +283,12 @@ begin   ### [a,b]/[c,d] = [min(a*d, a*c, b*d, b*c), max(a*d, a*c, b*d, b*c)]
 	function /(I1::Intervalo, I2::Intervalo)
 		if 0 ∈ I2   ### 'cause it undefines Intervalo(1/sup(b), 1/inf(b))
 			if I2 == Intervalo(0.0)
-				return intervalo_vacio(0.0)
+				return intervalo_vacio()
 			else
 				return Intervalo(-Inf, Inf)
 			end
-		elseif I2.infimo == Inf == I2.supremo   ### Dividing by the empty interval
-			return intervalo_vacio(0.0)
+		elseif isempty(I2)   ### Dividing by the empty interval
+			return intervalo_vacio()
 		else
 			I3 = Intervalo(1/I2.supremo, 1/I2.infimo)
 			p1 = I1.infimo*I3.infimo
@@ -275,10 +298,10 @@ begin   ### [a,b]/[c,d] = [min(a*d, a*c, b*d, b*c), max(a*d, a*c, b*d, b*c)]
 			return Intervalo(min(p1, p2, p3, p4), max(p1, p2, p3, p4))
 		end
 	end
-	function /(r::Real, I::Intervalo)   ### x/[a,b] = [x/b, x/a]
-		if 0 ≤ r
+	function /(r::Real, I::Intervalo)
+		if 0 ≤ r   ### x/[a,b] = [x/b, x/a] for r ≥ 0
 			return Intervalo(r/I.supremo, r/I.infimo)
-		else
+		else   ### x/[a,b] = [x/a, x/b] for r < 0
 			return Intervalo(r/I.infimo, r/I.supremo)
 		end
 	end
@@ -288,7 +311,7 @@ end
 begin   ### [a,b]^n = x^n for all x ∈ [a,b]
 	import Base: ^
 	function ^(I::Intervalo, n::Int64)
-		if I.infimo == Inf == I.supremo   ### Empty interval case
+		if isempty(I)   ### Empty interval case
 			return I
 		elseif 0 < I.infimo   ### [a,b] such that 0 < a case
 			return Intervalo(I.infimo^n, I.supremo^n)
@@ -320,8 +343,8 @@ end
 
 # ╔═╡ Cell order:
 # ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
-# ╠═aef78ea7-00db-4f69-a67a-3090b1f72e26
 # ╠═d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
+# ╠═707aaa8a-df8d-424a-8555-1e63eadd45a7
 # ╠═d5dd2e80-03a2-41f3-9919-6f88bf385887
 # ╠═21ee3561-710b-4f31-9cbe-dd4d6539f627
 # ╠═829eb20a-b46a-4f54-a20c-8831802e2fa1
