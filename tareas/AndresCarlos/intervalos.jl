@@ -4,7 +4,7 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 7dfae42a-4211-11ec-3983-29e1cea73a3b
+# ╔═╡ 4b284cea-50cb-11ec-35ae-37833d8ea5c5
 module Intervalos
 
 export Intervalo, intervalo_vacio
@@ -389,9 +389,28 @@ begin
 	#No, no es necesario xD
 	function /(a::Intervalo, b::Intervalo) #Definimos la función división
 		#@assert b.infimo < 0 && b.infimo > 0 && b.supremo < 0 && b.supremo > 0 #Que no haya ceros
-	    divinf = min(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo))
-	    divsup = max(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo))
-	    return Intervalo(divinf, divsup) #Regresamos el valor de la división calculado
+		if 0 > b.supremo || 0 < b.infimo
+	    	divinf = min(prevfloat(a.infimo*(1/b.supremo)), prevfloat(a.infimo*(1/b.infimo)), prevfloat(a.supremo*(1/b.supremo)), prevfloat(a.supremo*(1/b.infimo)))
+	    	divsup = max(nextfloat(a.infimo*(1/b.supremo)), nextfloat(a.infimo*(1/b.infimo)), nextfloat(a.supremo*(1/b.supremo)), nextfloat(a.supremo*(1/b.infimo)))
+	    	return Intervalo(divinf, divsup) #Regresamos el valor de la división calculado}
+		elseif a.infimo < 0 < a.supremo && b.infimo < 0 < b.supremo
+			return Intervalo(-Inf, Inf)
+		elseif a.supremo < 0 && b.infimo < b.supremo == 0
+			return Intervalo(a.supremo/b.infimo, Inf)
+		elseif a.supremo < 0 && b.infimo < 0 < b.supremo
+			return Intervalo(a.supremo/b.infimo, Inf) ∪ Intervalo(-Inf, a.supremo/b.supremo)
+		elseif a.supremo < 0 && 0 == b.infimo < b.supremo
+			return Intervalo(-Inf, a.supremo/b.supremo)
+		elseif 0 < a.infimo && b.infimo < b.supremo < 0
+			return Intervalo(-Inf, a.supremo/b.supremo)
+		elseif 0 < a.infimo && b.infimo < 0 < b.supremo
+			return Intervalo(a.infimo/b.supremo, Inf) ∪ Intervalo(-Inf, a.infimo/b.infimo)
+		elseif 0 < a.infimo && 0 < b.infimo < b.supremo 
+			return Intervalo(a.infimo/b.supremo, Inf)
+		elseif 0 > a.supremo || 0 < a.infimo && b.infimo == 0 && b.supremo == 0
+			return intervalo_vacio()
+		end
+		
     end
 	
 	####  ####
@@ -406,142 +425,6 @@ end
 
 end
 
-
-
-# ╔═╡ b6be6e7a-3ae9-48ba-abf6-bd04e889164b
-#Intervalo()
-
-# ╔═╡ a2d08992-2591-4f1d-a8e0-43076aa9d5e2
-#Union
-
-
-
-# ╔═╡ 477da29e-8326-48aa-b823-01cc86c4d4b3
-begin
-	I1=Intervalo(3,4)
-    I2=Intervalo(5,9)
-	I3=Intervalo(1,10)
-	I4=Intervalo(9,16)
-	zero=Intervalo(0,0)
-end
-
-# ╔═╡ d1affbbd-b74e-4983-a6a2-92a688ab6c19
-∪(I1,I2)
-
-# ╔═╡ 5b13850e-1e68-461b-a41c-2cd695502716
-#Intersección
-
-# ╔═╡ 6a5926ee-e419-4ea4-9ed2-fe1dd110de89
-#Igualdad de intervalos
-		
-
-# ╔═╡ 94aa2723-4d33-4a1d-b9f0-eae10c02f157
-I1 == I2
-
-# ╔═╡ 85117a02-e8fb-40e9-b9dc-43e1b599179a
-#Pertenencia de elementos
-
-# ╔═╡ cb54faf9-cd66-4459-b3f9-9917b6d5df7b
-7 ∈ I2
-
-# ╔═╡ 38542482-adfd-45d9-8190-c823e63740cf
-#Contencion de elementos
-
-# ╔═╡ 1eac0dc7-89db-42fe-bff5-d5db0b317383
-I1 ⪽ I3
-
-# ╔═╡ 9b51c7e4-7c48-4f46-8e52-4f8d4fbd6cbe
-### Contención inversa ####
-
-# ╔═╡ b55288a2-3e37-4f0e-9e29-54646aaf672a
-### Contenido o igual #####
-
-# ╔═╡ f18f5215-6846-4ee2-aa5a-a1bb0926c720
-#Suma de intervalos
-
-# ╔═╡ 22abd523-629b-4463-b7e5-872081bac579
-+(I1,1)
-
-
-# ╔═╡ ba47a76f-75b7-4ee0-8f5a-aaa3332d9cc3
-#Resta de intervalos 
-
-# ╔═╡ 0ddfbb55-cad4-4212-a0af-ff51b864e54c
--(I1,I2)
-
-# ╔═╡ 715fe57f-04c9-4ec2-96d7-cfc3f83c5baf
-#Multiplicación de intervalos
-
-# ╔═╡ bdc3c336-77c1-47f2-a7f7-0bd5b41e38d0
-*(I4,I4)
-
-# ╔═╡ baf8ef76-0642-4510-82cc-668e0cf216c3
-#=begin 
-	
-	import Base: ^ #Importamos de Base la potencia
-	
-	function ^(a::intervalo, n::Integer) #definimos la potencia
-		#@assert typeof(n) == Integer
-		k=1 #Ponemos valores iniciales para hacer la potencia
-		b=a #Definimos b = a para que haga el producto usando codigo anterior
-		
-	    for i in 1:n #Iteramos para la potencia buscada
-			k=k+1    #Aumentamos un valor a K para que en algun momento se detenga
-		    poteninf = min(a.inf*b.inf, a.inf*b.sup, a.sup*b.inf, a.sup*b.sup)
-	        potensup = max(a.inf*b.inf, a.inf*b.sup, a.sup*b.inf, a.sup*b.sup)
-	        b=intervalo(poteninf, potensup) #Obtenemos un nuevo valor de b
-			if k == n #Si se ejecuta el codigo n-1 veces se detiene la iteración
-				break #Se sale del ciclo con el break
-			end
-			
-		end
-		
-		return b #Regresamos el nuevo valor de b, o la potencia nueva que se buscaba
-		
-    end
-	
-end =#
-
-# ╔═╡ 1a338fb1-44d6-4793-948c-5a6f2e187791
-#potencias de intervalos
-
-# ╔═╡ 7533db12-f172-4c27-89a4-2a69eadb5153
-typeof(0)
-
-# ╔═╡ 58f9b25f-14dc-4e31-b579-3e48bea5c450
-I11=Intervalo(-1,1)
-
-# ╔═╡ 06253152-86e6-4449-811d-288ca381da70
-^(I11, 3)
-
-# ╔═╡ 09b7fdad-8d3d-4ad5-88ea-86c6d266f250
-#### División de intervalos 
-
-# ╔═╡ 92b5da99-b067-4b68-8bff-2b15090df7b9
-/(I1, I2)
-
-# ╔═╡ e10f41f4-739d-4f30-8b85-b8b87bc02635
-iseven(0)
-
-
-# ╔═╡ ac97b423-45cd-45d5-94be-528fc40f3f86
-begin
-	I9=Intervalo(0.0,1.0) 
-	I8=Intervalo(-Inf, Inf) 
-	#*(I8,I9)
-end
-
-# ╔═╡ 9b1fc3ed-c82d-4b2c-9e23-25145ff3864f
-∪(I8,I9)
-
-# ╔═╡ abc50fb4-861a-44ec-86b0-c4ff193134e8
-function intervalo_vacio(T::Type)
-
-            return Intervalo(T(Inf))
-end
-
-# ╔═╡ 9685811f-8090-4ca8-bed8-8645c7445d3b
-intervalo_vacio(4)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -567,37 +450,6 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 """
 
 # ╔═╡ Cell order:
-# ╠═7dfae42a-4211-11ec-3983-29e1cea73a3b
-# ╠═b6be6e7a-3ae9-48ba-abf6-bd04e889164b
-# ╠═a2d08992-2591-4f1d-a8e0-43076aa9d5e2
-# ╠═477da29e-8326-48aa-b823-01cc86c4d4b3
-# ╠═d1affbbd-b74e-4983-a6a2-92a688ab6c19
-# ╠═5b13850e-1e68-461b-a41c-2cd695502716
-# ╠═6a5926ee-e419-4ea4-9ed2-fe1dd110de89
-# ╠═94aa2723-4d33-4a1d-b9f0-eae10c02f157
-# ╠═85117a02-e8fb-40e9-b9dc-43e1b599179a
-# ╠═cb54faf9-cd66-4459-b3f9-9917b6d5df7b
-# ╠═38542482-adfd-45d9-8190-c823e63740cf
-# ╠═1eac0dc7-89db-42fe-bff5-d5db0b317383
-# ╠═9b51c7e4-7c48-4f46-8e52-4f8d4fbd6cbe
-# ╠═b55288a2-3e37-4f0e-9e29-54646aaf672a
-# ╠═f18f5215-6846-4ee2-aa5a-a1bb0926c720
-# ╠═22abd523-629b-4463-b7e5-872081bac579
-# ╠═ba47a76f-75b7-4ee0-8f5a-aaa3332d9cc3
-# ╠═0ddfbb55-cad4-4212-a0af-ff51b864e54c
-# ╠═715fe57f-04c9-4ec2-96d7-cfc3f83c5baf
-# ╠═bdc3c336-77c1-47f2-a7f7-0bd5b41e38d0
-# ╠═baf8ef76-0642-4510-82cc-668e0cf216c3
-# ╠═1a338fb1-44d6-4793-948c-5a6f2e187791
-# ╠═7533db12-f172-4c27-89a4-2a69eadb5153
-# ╠═58f9b25f-14dc-4e31-b579-3e48bea5c450
-# ╠═06253152-86e6-4449-811d-288ca381da70
-# ╠═09b7fdad-8d3d-4ad5-88ea-86c6d266f250
-# ╠═92b5da99-b067-4b68-8bff-2b15090df7b9
-# ╠═e10f41f4-739d-4f30-8b85-b8b87bc02635
-# ╠═ac97b423-45cd-45d5-94be-528fc40f3f86
-# ╠═9b1fc3ed-c82d-4b2c-9e23-25145ff3864f
-# ╠═abc50fb4-861a-44ec-86b0-c4ff193134e8
-# ╠═9685811f-8090-4ca8-bed8-8645c7445d3b
+# ╠═4b284cea-50cb-11ec-35ae-37833d8ea5c5
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
