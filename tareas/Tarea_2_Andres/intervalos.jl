@@ -1,11 +1,7 @@
-### A Pluto.jl notebook ###
-# v0.17.1
-
 module Intervalos
 
 export Intervalo, intervalo_vacio, isinterior, ⪽, hull, ⊔, division_extendida
 
-# ╔═╡ 6a13438f-43df-42ac-861f-e3522b35b9a1
 struct Intervalo{T<:Real}
 	
 	infimo::T;   supremo::T
@@ -32,7 +28,6 @@ struct Intervalo{T<:Real}
 	end
 end
 
-# ╔═╡ d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
 begin   ### Empty interval
 	function intervalo_vacio()   ### Without argument
 		return Intervalo(NaN)
@@ -50,7 +45,6 @@ begin   ### Empty interval
 	end
 end
 
-# ╔═╡ 707aaa8a-df8d-424a-8555-1e63eadd45a7
 begin   ### Checking if an interval I is the empty interval
 	import Base: isempty
 	function isempty(I::Intervalo)
@@ -58,7 +52,6 @@ begin   ### Checking if an interval I is the empty interval
 	end
 end
 
-# ╔═╡ d5dd2e80-03a2-41f3-9919-6f88bf385887
 begin   ### [a,b] == [c,d] ⇒ a = b && b = d
 	import Base: ==
 	function ==(I1::Intervalo, I2::Intervalo)
@@ -71,7 +64,6 @@ begin   ### [a,b] == [c,d] ⇒ a = b && b = d
 	end
 end
 
-# ╔═╡ 21ee3561-710b-4f31-9cbe-dd4d6539f627
 begin   ### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
 	import Base: ⊆
 	function ⊆(I1::Intervalo, I2::Intervalo)
@@ -85,7 +77,6 @@ begin   ### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
 	end
 end
 
-# ╔═╡ 829eb20a-b46a-4f54-a20c-8831802e2fa1
 begin   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) == false
 	function ⊂(I1::Intervalo, I2::Intervalo)
 		if isempty(I1)   ### Empty I case
@@ -115,7 +106,6 @@ begin   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) 
 	end
 end   ### Note: There were no methods for this symbols
 
-# ╔═╡ e94fbbe6-c740-4fa8-8c44-5d009a1d6c34
 begin   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 	function isinterior(I1::Intervalo, I2::Intervalo)
 		if isempty(I1)   ### Empty I case
@@ -129,7 +119,6 @@ begin   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 	const ⪽ = isinterior
 end
 
-# ╔═╡ b03dc9d7-eca2-4ac3-ae5f-20d3a18d2db8
 begin   ### x ∈ [a,b] ⇒ a ≤ x ≤ b
 	import Base: ∈
 	function ∈(x::Real, I::Intervalo)
@@ -137,7 +126,6 @@ begin   ### x ∈ [a,b] ⇒ a ≤ x ≤ b
 	end
 end
 
-# ╔═╡ 313975d8-9c31-4217-a284-e4ffbd29563a
 begin   ### [a,b] ⊔ [c,d] = [min(a,c), max(b,d)]
 	function hull(I1::Intervalo, I2::Intervalo)
 		if isempty(I1)   ### Empty interval cases
@@ -155,7 +143,6 @@ begin   ### [a,b] ⊔ [c,d] = [min(a,c), max(b,d)]
 	const ⊔ = hull
 end   ### Note: There were no methods for this symbol
 
-# ╔═╡ a1963843-e33b-4d64-8a81-12015f5c6551
 begin   ### [a,b] ∩ [c,d] ⇒ [max(a,c), min(b,d)]
 	import Base: ∩
 	function ∩(I1::Intervalo, I2::Intervalo)
@@ -175,7 +162,6 @@ begin   ### [a,b] ∩ [c,d] ⇒ [max(a,c), min(b,d)]
 	end
 end
 
-# ╔═╡ 4cf8364c-2b9f-47f0-ace5-8c44a4cf2677
 begin   ### [a,b] ∪ [c,d] ⇒ [min(a,c), max(b,d)]
 	import Base: ∪
 	function ∪(I1::Intervalo, I2::Intervalo)
@@ -193,7 +179,6 @@ begin   ### [a,b] ∪ [c,d] ⇒ [min(a,c), max(b,d)]
 	end
 end   ### Note: Doesn't work with disjoint sets
 
-# ╔═╡ eda9c77d-e724-4633-a4db-4ca3f305c3c7
 begin   ### [a,b] + [c,d] = [a+c, b+d]   Rounded
 	import Base: +
 	function +(I1::Intervalo, I2::Intervalo)
@@ -210,7 +195,6 @@ begin   ### [a,b] + [c,d] = [a+c, b+d]   Rounded
 	end
 end
 
-# ╔═╡ 52c665ab-42ac-441e-939e-518e1fd32431
 begin   ### [a,b] - [c,d] = [a-d, b-c]   Rounded
 	import Base: -
 	function -(I1::Intervalo, I2::Intervalo)
@@ -227,7 +211,6 @@ begin   ### [a,b] - [c,d] = [a-d, b-c]   Rounded
 	end
 end
 
-# ╔═╡ 45297b5b-5d4d-43bc-8a80-c8f03aa8b905
 begin   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]   Rounded
 	import Base: *
 	function *(I1::Intervalo, I2::Intervalo)
@@ -269,7 +252,6 @@ begin   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]   Rounded
 	end
 end
 
-# ╔═╡ a18c8e6a-f815-488c-b155-ba8f1f6c5e1c
 begin   ### [a,b]/[c,d] = [min(a*1/d, a*1/c, b*1/d, b*1/c), max(a*1/d, a*1(c, b*1/d, b*1/c)]   Rounded
 	import Base: /
 	function /(I1::Intervalo, I2::Intervalo)
@@ -307,7 +289,6 @@ begin   ### [a,b]/[c,d] = [min(a*1/d, a*1/c, b*1/d, b*1/c), max(a*1/d, a*1(c, b*
 	end
 end
 
-# ╔═╡ 81728a49-6e73-4a13-8ddc-1e34f902df39
 begin   ### [a,b]^n = x^n for all x ∈ [a,b]   Rounded
 	import Base: ^
 	function ^(I::Intervalo, n::Int64)
@@ -337,7 +318,6 @@ begin   ### [a,b]^n = x^n for all x ∈ [a,b]   Rounded
 	end
 end
 
-# ╔═╡ e05b819a-0881-4c84-a997-6ddf20bf2425
 begin
 	import Base: inv
 	function inv(I::Intervalo)
@@ -345,7 +325,6 @@ begin
 	end
 end
 
-# ╔═╡ e90c7275-d490-4c46-ab7c-5f7ee930c296
 begin   ### Rounded
 	function division_extendida(I1::Intervalo, I2::Intervalo)
 		if 0.0 ∉ I2
@@ -369,25 +348,5 @@ begin   ### Rounded
 		end
 	end
 end
-
-# ╔═╡ Cell order:
-# ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
-# ╠═d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
-# ╠═707aaa8a-df8d-424a-8555-1e63eadd45a7
-# ╠═d5dd2e80-03a2-41f3-9919-6f88bf385887
-# ╠═21ee3561-710b-4f31-9cbe-dd4d6539f627
-# ╠═829eb20a-b46a-4f54-a20c-8831802e2fa1
-# ╠═e94fbbe6-c740-4fa8-8c44-5d009a1d6c34
-# ╠═b03dc9d7-eca2-4ac3-ae5f-20d3a18d2db8
-# ╠═313975d8-9c31-4217-a284-e4ffbd29563a
-# ╠═a1963843-e33b-4d64-8a81-12015f5c6551
-# ╠═4cf8364c-2b9f-47f0-ace5-8c44a4cf2677
-# ╠═eda9c77d-e724-4633-a4db-4ca3f305c3c7
-# ╠═52c665ab-42ac-441e-939e-518e1fd32431
-# ╠═45297b5b-5d4d-43bc-8a80-c8f03aa8b905
-# ╠═a18c8e6a-f815-488c-b155-ba8f1f6c5e1c
-# ╠═81728a49-6e73-4a13-8ddc-1e34f902df39
-# ╠═e05b819a-0881-4c84-a997-6ddf20bf2425
-# ╠═e90c7275-d490-4c46-ab7c-5f7ee930c296
 
 end
