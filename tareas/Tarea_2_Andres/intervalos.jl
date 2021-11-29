@@ -18,12 +18,11 @@ struct Intervalo{T<:Real}
 
 # To check that the interval satisfy the condition a ≤ b for Intervalo(a,b) ≡ [a,b]	
 	function Intervalo(infimo::T, supremo::T) where {T<:AbstractFloat}
-		if isnan(infimo)
+		if isnan(infimo) || isnan(supremo)
 			return new{T}(NaN, NaN)
-		elseif infimo ≤ supremo
-			return new{T}(infimo, supremo)
 		else
-			return "Undefined interval: a ≰ b for Intervalo(a,b)"
+			@assert infimo ≤ supremo
+			return new{T}(infimo, supremo)
 		end
 	end
 
