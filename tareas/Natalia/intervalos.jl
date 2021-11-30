@@ -3,7 +3,7 @@ module Intervalos
 
 import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;
 
-export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; 
+export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida;
 
 """
 Intervalo.
@@ -235,8 +235,28 @@ const ⪽ = isint
 
 #Suma de intervalos +
 	
-	+(A::Intervalo, B::Intervalo)=Intervalo(A.infimo + B.infimo, A.supremo + B.supremo) 
-	+(A::Intervalo, x::Real) = A + Intervalo(x) #Caso [a,b] + x
+                 function +(A::Intervalo, B::Intervalo)
+		
+		if isempty(A) 
+			
+			return A
+			
+		elseif isempty(B)
+			
+			return B
+			
+		else 
+			return Intervalo(prevfloat(A.infimo + B.infimo), nextfloat( A.supremo + B.supremo))
+	                end 
+	end 
+
+                function +(A::Intervalo, x::Real) 
+                             
+                                  I = A + Intervalo(x) #Caso [a,b] + x
+                          
+                                  return I
+                end 
+                
 	+(x::Real, A::Intervalo) = Intervalo(x) + A #Caso x + [a,b]
 	+(A::Intervalo) = A #Caso x + [a,b]
 
@@ -244,7 +264,7 @@ const ⪽ = isint
 #Resta de intervalos -
 
 	
-	-(A::Intervalo, B::Intervalo)=Intervalo(A.infimo - B.supremo, A.supremo - B.infimo)
+	-(A::Intervalo, B::Intervalo)=Intervalo(prevfloat(A.infimo - B.supremo), nextfloat(A.supremo - B.infimo))
 	-(A::Intervalo, x::Real) = A - Intervalo(x) #Caso [a,b] - x 
 	-(x::Real, A::Intervalo) = Intervalo(x) - A #Caso x - [a,b]
 	-(A::Intervalo) = Intervalo(-A.supremo, -A.infimo) #Caso x + [a,b]
@@ -257,16 +277,21 @@ function *(A::Intervalo, B::Intervalo)
                 if isempty(A) || isempty(B)
 
                      return intervalo_vacio(BigFloat)
-
+ 
+	elseif A == Intervalo(-Inf,Inf) && B == Intervalo(0,0)  
+		             
+	     return B
+		
                 else 
 
-                     return Intervalo(min(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo),max(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo))
+                     return Intervalo(prevfloat(min(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo)),nextfloat(max(A.infimo*B.infimo,A.supremo*B.infimo,A.infimo*B.supremo,A.supremo*B.supremo)))
                 
                end 
 end 
 
-	*(A::Intervalo, x::Real) = Intervalo(x*A.infimo,x*A.supremo) #Caso c*[a,b]
-	*(x::Real, A::Intervalo) = Intervalo(x*A.infimo,x*A.supremo) #Caso [a,b]*c
+
+*(A::Intervalo, x::Real) = Intervalo(prevfloat(x*A.infimo),nextfloat(x*A.supremo)) #Caso c*[a,b]
+*(x::Real, A::Intervalo) = Intervalo(prevfloat(x*A.infimo),nextfloat(x*A.supremo)) #Caso [a,b]*c
 
 
 #División de intervalos /
@@ -283,17 +308,29 @@ function /(A::Intervalo, B::Intervalo)
 
                elseif 1/B.supremo > 1/B.infimo 
                 
-                    return Intervalo(-Inf,Inf)
-
+                    return Intervalo(-Inf, Inf)
               else 
-
-                     return A*Intervalo(1/B.supremo,1/B.infimo)
+                        I = A*Intervalo(1/B.supremo,1/B.infimo)
+			
+	       return I
 
                end 
 end 
+	function /(x::Real, B::Intervalo)
+		
+		I = x*Intervalo(1/B.supremo,1/B.infimo)
+		
+		return I
+		
+	end 
 	
-	/(x::Real, B::Intervalo)=x*Intervalo(1/B.supremo,1/B.infimo)
-	/(A::Intervalo, x::Real)=A*Intervalo(1/x,1/x)
+	function /(A::Intervalo, x::Real)
+		
+		I = A*Intervalo(1/x,1/x)	
+		
+		return I
+		
+	end 
 
 
 #Función inverso inv(a)
@@ -301,14 +338,25 @@ end
 import Base. inv
 
 	function inv(A::Intervalo)
-		I = Intervalo(1/A.supremo,1/A.infimo)
-	         return I
-                end
+		
+	       if A == Intervalo(0,0)
+
+		 return intervalo_vacio(BigFloat)
+
+       	      else 
+		I = Intervalo(prevfloat(1/A.supremo), nextfloat(1/A.infimo))
+
+	                return I
+
+	     end 
+              end
 
 #Función mag
 
 function mag(A::Intervalo)
+
 	I = max(abs(A.infimo),abs(A.supremo))
+
 	return I
 end 
 
@@ -317,7 +365,9 @@ end
 function mig(A::Intervalo)
 	
 	if A == Intervalo(0,0)
+
 	    I = 0
+
 	else 
 		I = min(abs(A.infimo),abs(A.supremo))
 	end 
@@ -327,7 +377,7 @@ end
 
 # Potencias enteras y no negativas jeje 
 
-	function ^(A::Intervalo,n::Int64)
+	function ^(A::Intervalo,n)
 	
 	if n == 0
 			
@@ -335,34 +385,95 @@ end
     
 	    return I 
 		
-                elseif isempty(A)
+    elseif isempty(A)
        
-                         return A
+         return A
 
+	elseif n == 1
+			
+	         I = A
+			
+	        return A
+	
+	elseif n == -1
+			
+	        return inv(A)
+	
 	elseif 0 ∈ A
 
-                        if n%2 == 0 
+                       if n%2 == 0 
 
-                             return Intervalo(0, mag(A)^n)
+                          return Intervalo(0, nextfloat(mag(A)^n))
 
-                        else 
+                       else 
 
-                            return  Intervalo(A.infimo^n, A.supremo^n)
+                         return  Intervalo(prevfloat(A.infimo^n), nextfloat(A.supremo^n))
 
-                        end
+                      end
 
-                elseif mod(n,2) == 0
+               elseif mod(n,2) == 0
 			    
-		I = Intervalo(mig(A)^n, mag(A)^n) #PAR
+	         I = Intervalo(prevfloat(mig(A)^n), nextfloat(mag(A)^n)) #PAR
 	         
-                           return I
-                else 
+             return I
+     else 
 		
-		I = Intervalo(A.infimo^n, A.supremo^n) #IMPAR
+	I = Intervalo(prevfloat(A.infimo^n), nextfloat(A.supremo^n)) #IMPAR
                           
-                           return I 
+             return I 		
+     end	
+end  
+
+#División extendida 
+
+function division_extendida(A::Intervalo, B::Intervalo)
+		
+		if 0 ∉ B
+			I = A*Intervalo(1/B.supremo,1/B.infimo)
 			
-                end	
-end 
+			return (I,)
+			
+		elseif 0 ∈ A && 0 ∈ B
+			
+			return (Intervalo(-Inf,Inf),)
+
+                               elseif A.supremo < 0 && B.infimo<B.supremo == 0
+ 
+                                               return (Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
+			
+		elseif (A.supremo < 0) && (B.infimo < 0 < B.supremo) 
+			
+			return (Intervalo(-Inf,nextfloat(A.supremo/B.supremo)),Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
+		
+		elseif A.supremo < 0 && 0 == B.infimo < B.supremo
+			
+			return (Intervalo(-Inf, nextfloat(A.supremo/B.supremo)),)
+			
+		elseif 0 < A.infimo && 0 == B.supremo > B.infimo 
+			
+			return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)),)
+			
+		elseif (0 < A.infimo) && (B.infimo < 0 < B.supremo)
+
+                                              if  1/B.supremo > 1/B.infimo 
+                
+                                                    return (Intervalo(-Inf, Inf), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
+
+                                              else 
+			
+		                return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
+			
+                                              end
+ 
+		elseif B.infimo == B.supremo == 0 && 0 ∉ A 
+			
+			return (intervalo_vacio(BigFloat),)
+			
+		else 
+			
+			return (Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
+		
+		end 
+	end 
 
 end 
