@@ -1,5 +1,5 @@
 #-
-# # Análisis con intervalos 1
+# # Análisis con intervalos 2
 
 #-
 # > Ref: W. Tucker, Validated Numerics: A Short Introduction to Rigorous Computations, Princeton University Press, 2011
@@ -13,7 +13,7 @@
 
 #-
 # **Teorema** (Teorema del valor medio). Si la función $f$ es continua en $[a,b]$ y
-# diferenciableen $(a,b)$, entonces existe un valor $\zeta \in [a,b]$ tal que
+# diferenciable en $(a,b)$, entonces existe un valor $\zeta \in [a,b]$ tal que
 # $f^\prime(\zeta) = (f(b)-f(a))/(b-a)$.
 
 #-

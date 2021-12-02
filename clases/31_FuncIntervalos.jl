@@ -172,7 +172,7 @@ plot!(a.lo:1/128:a.hi, f, lw=2, color=:red, label="f(x)")
 # (en el sentido del `hull`)
 # resultará en una cota más estrecha para el rango.
 
-a_minced = mince(a, 4)   # dicidimos `a` en 4 intervalos iguales
+a_minced = mince(a, 4)   # dividimos `a` en 4 intervalos iguales
 
 #-
 Fav = f.(a_minced) # evaluamos `f` en cada uno de los subintervalos
