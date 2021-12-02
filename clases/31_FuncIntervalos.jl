@@ -67,13 +67,13 @@
 # \sin([x]) = \begin{cases}
 # \begin{align*}
 # & [-1,1],
-# & \textrm{si } [x]\cap S_+ \neq [\emptyset] \textrm{ y } S_- \neq [\emptyset],\\
+# & \textrm{si } [x]\cap S_+ \neq [\emptyset] \textrm{ y } [x]\cap S_- \neq [\emptyset],\\
 # & [-1, \max(\sin(\underline{x}), \sin(\overline{x}))],
-# & \textrm{si } [x]\cap S_+ = [\emptyset] \textrm{ y } S_- \neq [\emptyset],\\
+# & \textrm{si } [x]\cap S_+ = [\emptyset] \textrm{ y } [x]\cap S_- \neq [\emptyset],\\
 # & [\min(\sin(\underline{x}), \sin(\overline{x})), 1],
-# & \textrm{si } [x]\cap S_+ \neq [\emptyset] \textrm{ y } S_- = [\emptyset],\\
+# & \textrm{si } [x]\cap S_+ \neq [\emptyset] \textrm{ y } [x]\cap S_- = [\emptyset],\\
 # & [\min(\sin(\underline{x}), \sin(\overline{x})), \max(\sin(\underline{x}), \sin(\overline{x}))],
-# & \textrm{si } [x]\cap S_+ = [\emptyset] \textrm{ y } S_- = [\emptyset].\\
+# & \textrm{si } [x]\cap S_+ = [\emptyset] \textrm{ y } [x]\cap S_- = [\emptyset].\\
 # \end{align*}
 # \end{cases}
 # ```
@@ -149,7 +149,8 @@ a = Interval(0, 0.5)   # Creamos un intervalo; hay distintas formas de hacer est
 Fa = f(a)  # Evaluamos la función en el intervalo `a`
 
 #-
-# El resultado anterior demuestra que $f(x)$ en el intervalo $[0,1/2]$, no tiene ceros.
+# El resultado anterior demuestra, en un sentido matemático(!), que $f(x)$ en el
+# intervalo $[0,1/2]$, no tiene ceros.
 
 #-
 using Plots
@@ -158,8 +159,8 @@ using Plots
 box_a = IntervalBox(a, Fa) # creamos una `caja` de intervalos
 
 #-
-plot(box_a)
-plot!(a.lo:1/128:a.hi, f, lw=2, color=:red)
+plot(box_a, label="F([a])")
+plot!(a.lo:1/128:a.hi, f, lw=2, color=:red, label="f(x)")
 
 #-
 # Como se muestra en la gráfica anterior, la extensión a intervalos de $f(x)$ produce un
@@ -174,12 +175,15 @@ plot!(a.lo:1/128:a.hi, f, lw=2, color=:red)
 a_minced = mince(a, 4)   # dicidimos `a` en 4 intervalos iguales
 
 #-
-Fa_minced = f.(a_minced) # evaluamos `f` en cada uno de los subintervalos
+Fav = f.(a_minced) # evaluamos `f` en cada uno de los subintervalos
 
 #-
-plot(box_a)  # Dibujamos la caja inicial
-plot!(IntervalBox.(a_minced, Fa_minced), color=:purple)  # Dibujamos las cajas de subintervalos
-plot!(a.lo:1/128:a.hi, f, lw=2, color=:red) # Dibujamos una aproximación de f(x)
+Fa_minced = hull(Fav)
+#-
+plot(box_a, label="F([a])")  # Dibujamos la caja inicial
+plot!(IntervalBox.(a_minced, Fav), color=:purple, label="F_i.([a_i])")  # Dibujamos las cajas de subintervalos
+plot!(IntervalBox.(a, Fav), color=:orange, label="hull(F_i.([a_i]))")  # Dibujamos las cajas de subintervalos
+plot!(a.lo:1/128:a.hi, f, lw=2, color=:red, label="f(x)") # Dibujamos una aproximación de f(x)
 
 #-
 # Esto se puede formular de manera más
