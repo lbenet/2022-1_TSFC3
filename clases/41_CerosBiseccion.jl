@@ -136,9 +136,9 @@ all(0 .∈ f.(raices))
 ceros_biseccion(f, Interval(-10,10.1), tol=1/2.0^10)
 
 #-
-# Vale la pena notar que, si uno tiene acceso a la derivada $f\prime(x)$, entonces uno
+# Vale la pena notar que, si uno tiene acceso a la derivada $f^\prime(x)$, entonces uno
 # puede saber si $f$ es monótona en el intervalo $[\tilde{x}]\subseteq D$, lo que ocurre si
-# $0\notin F\prime([\tilde{x}])$. La monotonía de $f$ permite entonces saber si el cero
+# $0\notin F^\prime([\tilde{x}])$. La monotonía de $f$ permite entonces saber si el cero
 # contenido en $[\tilde{x}]$ es único, es decir, el cero es una raíz simple.
 
 f′(x) = cos(x) * (x-cos(x)) + sin(x) * (1+sin(x))
