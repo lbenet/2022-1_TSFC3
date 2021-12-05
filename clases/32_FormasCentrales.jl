@@ -43,7 +43,7 @@
 #-
 # La extensión de intervalos $F([x]; c)$ se conoce como *forma central*, y la elección
 # más típica para $c$ es el $\textrm{mid}([x])$, el punto medio de $[x]$, lo que produce la
-# forma del valor medio $F_m([x])$ dada por
+# *forma del valor medio* $F_m([x])$ dada por
 # ```math
 # \begin{equation*}
 # F_m([x]) = F(m) + F'([x]) ([x]-m) = F(m) + F'([x]) [-r,r],
@@ -68,7 +68,7 @@
 # 4\textrm{rad}\big(F'([x])\big)\, \textrm{rad}([x]).
 # \end{equation*}
 # ```
-# Si la forma central se usa, el factor 4 debe reemplazarse por 2; esto muestra que la
+# Si la forma del valor medio se usa, el factor 4 debe reemplazarse por 2; esto muestra que la
 # simetría de la forma central es útil.
 
 #-
@@ -90,11 +90,11 @@ diam(fxI)
 
 #-
 """
-    forma_central(f, f′, I)
-Calcula el rango de `f` en `I` usando la forma central; requiere
+    forma_valormedio(f, f′, I)
+Calcula el rango de `f` en `I` usando la forma valormedio; requiere
 la forma funcional de la derivada de `f`, dada en `f′`.
 """
-function forma_central(f, f′, I)
+function forma_valormedio(f, f′, I)
     m = mid(I)
     c = m .. m # Incluye redondeo!
     #Lo siguiente es equivalente a las dos líneas anteriores
@@ -102,16 +102,16 @@ function forma_central(f, f′, I)
     return f(c) + f′(I)*(I-c)
 end
 
-fc = forma_central(f, f′, xI)
+fc = forma_valormedio(f, f′, xI)
 
 #-
 diam(fc)
 
 #-
-# La forma central `fc` da un resultado menos ancho que `fxI`, que es
+# La forma del calor medio `fc` da un resultado menos ancho que `fxI`, que es
 # la manera *ingenua* de evaluar el rango de $f(x)$ usando aritmética
 # de intervalos directamente. Sin embargo, uno puede observar que el
-# límite inferior de `fxI` es *mejor* que el dado por la forma central
+# ínfimo de `fxI` es *mejor* que el dado por la forma del valor medio
 # `fc`, en el sentido de que es mayor que el ínfimo producido por `fc`.
 # Entonces, una mejor cota para el rango se puede obtener de la
 # intersección de ambos resultados, `fxI ∩ fc`:
