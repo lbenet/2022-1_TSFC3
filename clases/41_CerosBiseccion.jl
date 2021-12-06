@@ -2,7 +2,7 @@
 # # Ceros de funciones 1
 
 #-
-# > Refs:
+# > Referencias:
 # >
 # > W. Tucker, Validated Numerics: A Short Introduction to Rigorous Computations, Princeton University Press, 2011
 # >
@@ -142,6 +142,6 @@ ceros_biseccion(f, Interval(-10,10.1), tol=1/2.0^10)
 # contenido en $[\tilde{x}]$ es único, es decir, el cero es una raíz simple.
 
 f′(x) = cos(x) * (x-cos(x)) + sin(x) * (1+sin(x))
-0 .∈ f′.(raices)
+all(0 .∈ f′.(raices))
 
 # El último resultado implica que todos los ceros son raíces únicas (simples).
