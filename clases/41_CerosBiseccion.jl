@@ -26,8 +26,8 @@
 # $f$ evaluada en estos puntos resulte en signos contrarios, es decir,
 # $f(a_0) f(b_0) < 0$. A partir de esto, que en sí puede ser difícil, uno considera
 # el punto medio, $c=(a_0+b_0)/2$. (i) Si $f(c)=0$, la raíz es $c$, y se termina
-# el procedimiento. (ii) Si $f(c)$ tiene el mismo signo que $a_0$ entonces
-# $a_1=c$ y $b_1=b$, o (iii) si $f(c)$ tiene el mismo signo que $b_0$, entonces
+# el procedimiento. (ii) Si $f(c)$ tiene el mismo signo que $f(a_0)$ entonces
+# $a_1=c$ y $b_1=b$, o (iii) si $f(c)$ tiene el mismo signo que $f(b_0)$, entonces
 # $a_1=b$ y $b_1=c$; en ambos casos, se vuelve al inicio del método
 # con los nuevos valores. El método se itera hasta que la distancia
 # $|a_k-b_k|<\tau$, donde $\tau$ es una tolerancia para aproximar el cero de la función.
@@ -142,6 +142,6 @@ ceros_biseccion(f, Interval(-10,10.1), tol=1/2.0^10)
 # contenido en $[\tilde{x}]$ es único, es decir, el cero es una raíz simple.
 
 f′(x) = cos(x) * (x-cos(x)) + sin(x) * (1+sin(x))
-all(0 .∈ f′.(raices))
+all(0 .∉ f′.(raices))
 
 # El último resultado implica que todos los ceros son raíces únicas (simples).

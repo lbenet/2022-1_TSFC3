@@ -62,10 +62,10 @@ using Plots
 f(x) = sin(x) - 0.1*x^2 + 1
 f′(x) = cos(x) - 0.2*x
 t(x, x₀) = f(x₀) + f′(x₀)*(x-x₀)
-x₀ = 1.75
 dom_tot = -6:0.125:6
 
 #-
+x₀ = 1.75
 anim1 = @animate for _ = 1:5
     #Iniciamos
     x₁ = x₀ - f(x₀)/f′(x₀)
@@ -152,7 +152,7 @@ anim1b = @animate for _ = 1:5
         markershape=:circle, linestyle=:dot)  # x_{k+1}
     global x₀ = x₁
 end
-gif(anim1, "anim1b.gif", fps = 1)
+gif(anim1b, "anim1b.gif", fps = 1)
 
 #-
 # ## El método de Newton para intervalos
@@ -161,7 +161,7 @@ gif(anim1, "anim1b.gif", fps = 1)
 # Igual que para el método usual de Newton, supondremos que $f:[x]\to\mathbb{R}$ es
 # continuamente diferenciable en $[x]$, que $x^*\in[x]$ satisface $f(x^*)=0$, que
 # existe y está bien definida la extensión intervalar de $f^\prime(x)$, y que
-# $0\notin F^\prime([x])$. Las hipótesis que hemos hecho permiten usar el Teoerma del
+# $0\notin F^\prime([x])$. Las hipótesis que hemos hecho permiten usar el Teorema del
 # Valor Medio, y entonces tenemos que $f(x) = f(x^*)+f^\prime(\zeta)(x-x^*)$, para
 # alguna $\zeta$ entre $x$ y $x^*$. De aquí, podemos despejar $x^*$,
 # ```math
