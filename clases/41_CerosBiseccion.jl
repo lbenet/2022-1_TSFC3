@@ -49,6 +49,11 @@
 # contener al cero) sea menor que cierto valor.
 
 #-
+using Pkg
+
+Pkg.activate("..")
+
+#-
 using IntervalArithmetic
 
 """
