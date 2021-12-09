@@ -124,15 +124,15 @@ fxI ∩ fc
 #-
 # Anteriormente vimos que la monotonicidad permite obtener cotas estrechas
 # del rango. La monotonicidad se puede inferir a partir de la derivada, la cual
-# es requerida para calcular la forma central. Entonces, si $f\prime([x])$
+# es requerida para calcular la forma central. Entonces, si $f^\prime([x])$
 # cumple ser mayor/menor o igual a cero (el cero sólo puede ocurrir en los
 # extremos del intervalo $[x]$), tenemos que la función $f(x)$ es creciente/decreciente
 # en $[x]$, y en este caso el rango de la función es:
 # ```math
 # R(f; [x]) = \begin{cases}
 # \begin{align*}
-# &[f(\underline{x}), f(\overline{x})], &\textrm{ si } \min\big(F\prime([x])\big)\geq 0,\\
-# &[f(\overline{x}), f(\underline{x})], &\textrm{ si } \min\big(F\prime([x])\big)\leq 0.
+# &[f(\underline{x}), f(\overline{x})], &\textrm{ si } \min\big(F^\prime([x])\big)\geq 0,\\
+# &[f(\overline{x}), f(\underline{x})], &\textrm{ si } \min\big(F^\prime([x])\big)\leq 0.
 # \end{align*}
 # \end{cases}
 # ```
