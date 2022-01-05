@@ -1,7 +1,7 @@
 
 module Intervalos
 
-import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;
+import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;    import Base. one;
 
 export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida;
 
@@ -12,7 +12,7 @@ Estructura básica de un intervalo, dado su ínfimo = mínimo y supremo = máxim
 *acotados* de la recta real.
 
 """
-struct Intervalo{T <: Real}
+struct Intervalo{T <: Real} <: Real
 		
     infimo :: T
     supremo :: T 
@@ -377,7 +377,7 @@ end
 
 # Potencias enteras y no negativas jeje 
 
-	function ^(A::Intervalo,n)
+	function ^(A::Intervalo, n::Int64)
 	
 	if n == 0
 			
@@ -423,6 +423,7 @@ end
              return I 		
      end	
 end  
+
 
 #División extendida 
 
@@ -476,4 +477,29 @@ function division_extendida(A::Intervalo, B::Intervalo)
 		end 
 	end 
 
+#ONE 
+
+    one(I::Intervalo{T}) where T<:Real = Intervalo(one(T))
+
+
+#FUNCIÓN PARA VERIFICAR QUE F SEA MONÓTONA
+
+	function esmonotona(f::Function,D::Intervalo)
+	
+	    R=ForwardDiff.derivative(f,D)
+	
+	    if R.infimo < 0 && R.supremo > 0
+		
+			return false 
+	
+	    elseif R.infimo > 0 && R.supremo < 0
+		
+			return false
+		
+	    else 
+		
+			return true
+		
+	    end 
+               end 
 end 
