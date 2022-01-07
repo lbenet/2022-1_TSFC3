@@ -12,11 +12,11 @@ include("My_Interval.jl")
 
 # ╔═╡ f6fbd260-bf9e-4ca9-9f7f-53100a24f962
 struct Raiz
-	raiz::Intervalo;   unicidad::Bool
+	raiz::Vector{Intervalo};   unicidad::Vector{Bool}
 end
 
 # ╔═╡ 3305d0e0-4774-4555-9c1a-d1c6832985ae
-function ceros_newton(f, I::Intervalo, tol)
+function INR_method(f, I::Intervalo, tol)
     0.0 ∉ f(I) && return false
 	roots = [I]
     (I.supremo - I.infimo < tol) && return roots
@@ -40,12 +40,55 @@ function ceros_newton(f, I::Intervalo, tol)
             end
         end
 		popfirst!(more_roots)
-        counter == length(more_roots) && return more_roots # intervals meet condition
+        counter == length(more_roots) && return more_roots
         roots = more_roots   ### If not, redefine the interval solutions array
     end
 end
 
-# ╔═╡ 3359ad00-8514-411b-8e05-0be4ecc5b0c3
+# ╔═╡ 6bbea2d2-28f9-4d55-9ab9-e034a308e232
+function esmonotona(f, I, part)
+	#part = 1e-5   
+	interv = I.infimo:part:I.supremo
+	for i in interv
+		if ForwardDiff.derivative(f,i) < 0.0
+			for j in i+1:part:interv[end]
+				if ForwardDiff.derivative(f,j) > 0.0
+					return false
+				end
+			end
+			return true
+		elseif ForwardDiff.derivative(f,i) > 0.0
+			for k in i+1:part:interv[end]
+				if ForwardDiff.derivative(f,k) < 0.0
+					return false
+				end
+			end
+			return true
+		end
+	end
+end
+
+# ╔═╡ ab894a96-c403-449c-b45c-b15eae978b1d
+function unicity(f, V, tol)
+	l = length(V)
+	uni = trues(l)
+	for I in 1:l
+		monot = esmonotona(f, V[I], tol*1e-1)
+		if monot == false
+			uni[I] = false
+		end
+	end
+	return uni
+end
+
+# ╔═╡ 3d099169-4f12-4144-8073-898c7714f204
+function ceros_newton(f, I::Intervalo, tol)
+	roots = INR_method(f, I, tol)
+	unis = unicity(f, roots, tol)
+	return Raiz(roots, unis)
+end
+
+# ╔═╡ c3ad29f5-c6cc-4792-b124-fb5f179cb23b
 begin
 	f(x) = x^2 - 2
 	plot(-5:0.01:5, x->f(x), key=false)
@@ -54,8 +97,17 @@ end
 # ╔═╡ aa4afe3c-b361-4802-9bd6-03305308f4a4
 begin
 	I = Intervalo(-5,2)
-	ceros_newton(f, I, 1e-4)
+	cn = ceros_newton(f, I, 1e-4)
 end
+
+# ╔═╡ 191b6662-4ee4-43ed-8778-c2ed1655ac73
+typeof(cn)
+
+# ╔═╡ c2ae9f2c-13e1-4017-9d32-6a18b8fc023a
+cn.raiz
+
+# ╔═╡ 84c316fe-01a8-44a2-9e61-6e4678534fa4
+cn.unicidad
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -522,9 +574,9 @@ uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
 [[deps.Ogg_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "7937eda4681660b4d6aeeecc2f7e1c81c8ee4e2f"
+git-tree-sha1 = "887579a3eb005446d514ab7aeac5d1d027658b8f"
 uuid = "e7412a2a-1a6e-54c0-be00-318e2571c051"
-version = "1.3.5+0"
+version = "1.3.5+1"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
@@ -974,11 +1026,17 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═b474c346-586a-4613-9f8f-37330ae99990
 # ╠═16fffd31-dcdb-469c-b1f0-02bc90bbac0f
+# ╠═b474c346-586a-4613-9f8f-37330ae99990
 # ╠═f6fbd260-bf9e-4ca9-9f7f-53100a24f962
 # ╠═3305d0e0-4774-4555-9c1a-d1c6832985ae
-# ╠═3359ad00-8514-411b-8e05-0be4ecc5b0c3
+# ╠═6bbea2d2-28f9-4d55-9ab9-e034a308e232
+# ╠═ab894a96-c403-449c-b45c-b15eae978b1d
+# ╠═3d099169-4f12-4144-8073-898c7714f204
+# ╠═c3ad29f5-c6cc-4792-b124-fb5f179cb23b
 # ╠═aa4afe3c-b361-4802-9bd6-03305308f4a4
+# ╠═191b6662-4ee4-43ed-8778-c2ed1655ac73
+# ╠═c2ae9f2c-13e1-4017-9d32-6a18b8fc023a
+# ╠═84c316fe-01a8-44a2-9e61-6e4678534fa4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
