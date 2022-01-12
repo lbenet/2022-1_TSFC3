@@ -377,20 +377,13 @@ begin   ### Neccesary for the use of ForwardDiff, .derivative() in particular.
 	end
 end
 
-# ╔═╡ 00000000-0000-0000-0000-000000000001
-PLUTO_PROJECT_TOML_CONTENTS = """
-[deps]
-"""
-
-# ╔═╡ 00000000-0000-0000-0000-000000000002
-PLUTO_MANIFEST_TOML_CONTENTS = """
-# This file is machine-generated - editing it directly is not advised
-
-julia_version = "1.7.0"
-manifest_format = "2.0"
-
-[deps]
-"""
+# ╔═╡ 448b4e4f-c412-4722-beaa-7053ba14bf41
+begin   ### Neccesary for some tests, not sure exactly which ones
+	import Base: zero
+	function zero(I::Intervalo)
+		return Intervalo(0.0)
+	end
+end
 
 # ╔═╡ Cell order:
 # ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
@@ -412,5 +405,4 @@ manifest_format = "2.0"
 # ╠═e05b819a-0881-4c84-a997-6ddf20bf2425
 # ╠═e90c7275-d490-4c46-ab7c-5f7ee930c296
 # ╠═d317ce68-c353-46f1-9696-9489fd42b66f
-# ╟─00000000-0000-0000-0000-000000000001
-# ╟─00000000-0000-0000-0000-000000000002
+# ╠═448b4e4f-c412-4722-beaa-7053ba14bf41
