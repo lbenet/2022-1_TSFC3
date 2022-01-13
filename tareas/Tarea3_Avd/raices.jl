@@ -8,7 +8,7 @@ using InteractiveUtils
 using ForwardDiff
 
 # ╔═╡ 1bd435bb-b9e8-40e1-83b9-6c65551c1280
-include("My_Interval.jl")
+include("intervalos.jl")
 
 # ╔═╡ f6fbd260-bf9e-4ca9-9f7f-53100a24f962
 struct Raiz
@@ -46,7 +46,7 @@ function INR_method(f, I::Intervalo, tol)
 end
 
 # ╔═╡ 6bbea2d2-28f9-4d55-9ab9-e034a308e232
-#=function esmonotona_chida(f, I, part=1e-3)
+#=function esmonotona_chida(f, I, part=1e-5)
 	interv = I.infimo:part:I.supremo
 	for i in interv
 		if ForwardDiff.derivative(f,i) == 0.0

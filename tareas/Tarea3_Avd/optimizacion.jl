@@ -8,7 +8,7 @@ using InteractiveUtils
 using Plots
 
 # ╔═╡ 7295e189-d6f2-410b-bca0-597e1b4089ee
-include("My_Interval.jl")
+include("intervalos.jl")
 
 # ╔═╡ 7dd4495e-73fc-11ec-37a7-9fbab661cf88
 #=function mini(f, I, tol=1e-3)   ### Non-Interval minimize method
@@ -58,7 +58,7 @@ end=#
 					end
 				end
 			end
-			push!(ys, f(p))
+			push!(ys, y_min)
 		end
 		if ys[1] < ys[2]
 			I₀ = Ints[1]
@@ -72,6 +72,10 @@ end=#
 end=#
 
 # ╔═╡ 5f4e4159-5517-4907-a583-3cdfbbcabbdb
+"""
+	minimiza(f, I, tol)
+Find the interval(s) (type=Intervalo) which contains the minimum of the function *f* in the initial given interval (type=Intervalo) *I*, until the diameter of the answer(s) meets the condition to have less length than *tol*.
+"""
 function minimiza(f, I, tol)
 	Intervals = [I]
 	while true
@@ -82,37 +86,93 @@ function minimiza(f, I, tol)
 			push!(to_add, Intervalo(mp, i.supremo))
 		end
 		popfirst!(to_add)
-		for j in to_add   ### Filtering the subintervals
-			g = f(j)
-			for k in to_add
-				h = f(k)
-				if g.infimo > h.supremo
-					deleteat!(to_add, findall(x->x==j, to_add))
-					break
-				end
-			end
-		end
 		Intervals = to_add   ### Redefining
 		I1 = Intervals[1]   ### Checking if the tol is meet
 		if (I1.supremo - I1.infimo) < tol
-			#=for i in Intervals
-				if i.infimo == i.supremo
-					deleteat!(Intervals, findall(x->x==i, Intervals))
+			l = length(Intervals)   ### Filtering the subintervals
+			sups = zeros(l);   infs = zeros(l)
+			for j in 1:l
+				sups[j] = f(Intervals[j]).supremo
+				infs[j] = f(Intervals[j]).infimo
+			end
+			super_sup = minimum(sups)
+			Is = [Intervalo(0)]
+			for k in 1:l
+				if infs[k] < super_sup
+					push!(Is, Intervals[k])
 				end
-			end=#
-			return Intervalo(Intervals[1].infimo, Intervals[end].supremo)
+			end
+			popfirst!(Is)
+			return Is #Intervals
 		end
 	end
 end
 
 # ╔═╡ bf68dde3-9148-4b3a-9261-de589885a749
-begin
-	f(x) = (x-2)^2 + 1 
-	plot(-5:0.1:5, x->f(x), key=false)
+#=begin
+	g(x) = - x^3 + (x+2)^2 - 2x + 3
+	mn = minimiza(x->g(x), Intervalo(-2,3), 1e-1)
+	p = plot(-2:0.1:3, x->g(x), key=false)
+	for i in mn
+		plot!(p, [i.infimo, i.infimo, i.supremo, i.supremo, i.infimo],
+		[g(i).infimo, g(i).supremo, g(i).supremo, g(i).infimo, g(i).infimo], lw=2)
+	end
+	p
+end=#
+
+# ╔═╡ eb213020-67db-4ac6-badf-2b5fe7f928b3
+#mn
+
+# ╔═╡ d3176cd6-4ff9-4ec9-8656-161de957557e
+"""
+	maximiza(f, I, tol)
+Find the interval(s) (type=Intervalo) which contains the maximum of the function *f* in the initial given interval (type=Intervalo) *I*, until the diameter of the answer(s) meets the condition to have less length than *tol*.
+"""
+function maximiza(f, I, tol)
+	Intervals = [I]
+	while true
+		to_add = [Intervalo(0)]
+		for i in Intervals   ### Subdividing the actual intervals
+			mp = i.infimo + (i.supremo - i.infimo)/2
+			push!(to_add, Intervalo(i.infimo, mp))
+			push!(to_add, Intervalo(mp, i.supremo))
+		end
+		popfirst!(to_add)
+		Intervals = to_add   ### Redefining
+		I1 = Intervals[1]   ### Checking if the tol is meet
+		if (I1.supremo - I1.infimo) < tol
+			l = length(Intervals)   ### Filtering the subintervals
+			sups = zeros(l);   infs = zeros(l)
+			for j in 1:l
+				sups[j] = f(Intervals[j]).supremo
+				infs[j] = f(Intervals[j]).infimo
+			end
+			super_inf = maximum(infs)
+			Is = [Intervalo(0)]
+			for k in 1:l
+				if super_inf < sups[k]
+					push!(Is, Intervals[k])
+				end
+			end
+			popfirst!(Is)
+			return Is #Intervals
+		end
+	end
 end
 
-# ╔═╡ cca90cc6-caa4-440e-a7a9-c75f4c79e0ae
-minimiza(x->f(x), Intervalo(1,4), 1e-8)
+# ╔═╡ 960f4d88-d6bc-4a60-aa91-7743edf7453f
+#=begin
+	mx = maximiza(x->g(x), Intervalo(-1.4,3), 1e-1)
+	q = plot(-1.5:0.1:3, x->g(x), key=false)
+	for i in mx
+		plot!(q, [i.infimo, i.infimo, i.supremo, i.supremo, i.infimo],
+		[g(i).infimo, g(i).supremo, g(i).supremo, g(i).infimo, g(i).infimo], lw=2)
+	end
+	q
+end=#
+
+# ╔═╡ bf8cdb62-9ba8-449f-9a65-f488b4f59904
+#mx
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -996,6 +1056,9 @@ version = "0.9.1+5"
 # ╠═6811f544-94ba-4998-9ab7-0c156f042736
 # ╠═5f4e4159-5517-4907-a583-3cdfbbcabbdb
 # ╠═bf68dde3-9148-4b3a-9261-de589885a749
-# ╠═cca90cc6-caa4-440e-a7a9-c75f4c79e0ae
+# ╠═eb213020-67db-4ac6-badf-2b5fe7f928b3
+# ╠═d3176cd6-4ff9-4ec9-8656-161de957557e
+# ╠═960f4d88-d6bc-4a60-aa91-7743edf7453f
+# ╠═bf8cdb62-9ba8-449f-9a65-f488b4f59904
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
