@@ -385,6 +385,21 @@ begin   ### Neccesary for some tests, not sure exactly which ones
 	end
 end
 
+# ╔═╡ 00000000-0000-0000-0000-000000000001
+PLUTO_PROJECT_TOML_CONTENTS = """
+[deps]
+"""
+
+# ╔═╡ 00000000-0000-0000-0000-000000000002
+PLUTO_MANIFEST_TOML_CONTENTS = """
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.7.0"
+manifest_format = "2.0"
+
+[deps]
+"""
+
 # ╔═╡ Cell order:
 # ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
 # ╠═d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
@@ -406,3 +421,5 @@ end
 # ╠═e90c7275-d490-4c46-ab7c-5f7ee930c296
 # ╠═d317ce68-c353-46f1-9696-9489fd42b66f
 # ╠═448b4e4f-c412-4722-beaa-7053ba14bf41
+# ╟─00000000-0000-0000-0000-000000000001
+# ╟─00000000-0000-0000-0000-000000000002

@@ -75,9 +75,8 @@ end=#
 
 # ╔═╡ 3090f4f9-130d-4ec1-8689-fc9492893e2c
 function esmonotona(f, I)
-	inf = ForwardDiff.derivative(f, I.infimo)
-	sup = ForwardDiff.derivative(f, I.supremo)
-	if 0.0 ∈ Intervalo(inf, sup)
+	Deriv = ForwardDiff.derivative(f, I)
+	if 0.0 ∈ Deriv
 		return false
 	else
 		return true
