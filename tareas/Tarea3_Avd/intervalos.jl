@@ -385,20 +385,14 @@ begin   ### Neccesary for some tests, not sure exactly which ones
 	end
 end
 
-# ╔═╡ 00000000-0000-0000-0000-000000000001
-PLUTO_PROJECT_TOML_CONTENTS = """
-[deps]
-"""
+# ╔═╡ 37bc24d3-f7d0-43c1-9a55-88dd754fe49c
+#using ForwardDiff
 
-# ╔═╡ 00000000-0000-0000-0000-000000000002
-PLUTO_MANIFEST_TOML_CONTENTS = """
-# This file is machine-generated - editing it directly is not advised
+# ╔═╡ 9334baf3-ea7e-4b05-b8b3-4493188ff46c
+#include("raices.jl")
 
-julia_version = "1.7.0"
-manifest_format = "2.0"
-
-[deps]
-"""
+# ╔═╡ 72270d05-e857-429e-bee4-3e6cda51dfee
+#include("optimizacion.jl")
 
 # ╔═╡ Cell order:
 # ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
@@ -421,5 +415,6 @@ manifest_format = "2.0"
 # ╠═e90c7275-d490-4c46-ab7c-5f7ee930c296
 # ╠═d317ce68-c353-46f1-9696-9489fd42b66f
 # ╠═448b4e4f-c412-4722-beaa-7053ba14bf41
-# ╟─00000000-0000-0000-0000-000000000001
-# ╟─00000000-0000-0000-0000-000000000002
+# ╠═37bc24d3-f7d0-43c1-9a55-88dd754fe49c
+# ╠═9334baf3-ea7e-4b05-b8b3-4493188ff46c
+# ╠═72270d05-e857-429e-bee4-3e6cda51dfee
