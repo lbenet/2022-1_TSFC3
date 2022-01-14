@@ -1,10 +1,3 @@
-### A Pluto.jl notebook ###
-# v0.17.3
-
-using Markdown
-using InteractiveUtils
-
-# ╔═╡ 7295e189-d6f2-410b-bca0-597e1b4089ee
 include("intervalos.jl")
 
 # ╔═╡ a7cc31d3-e34a-425a-a698-e4e869c57a05
@@ -189,34 +182,3 @@ end=#
 	any(4/5 .∈ xm)
 	all(ym .∈ h.(xm))
 end=#
-
-# ╔═╡ 00000000-0000-0000-0000-000000000001
-PLUTO_PROJECT_TOML_CONTENTS = """
-[deps]
-"""
-
-# ╔═╡ 00000000-0000-0000-0000-000000000002
-PLUTO_MANIFEST_TOML_CONTENTS = """
-# This file is machine-generated - editing it directly is not advised
-
-julia_version = "1.7.0"
-manifest_format = "2.0"
-
-[deps]
-"""
-
-# ╔═╡ Cell order:
-# ╠═a7cc31d3-e34a-425a-a698-e4e869c57a05
-# ╠═7295e189-d6f2-410b-bca0-597e1b4089ee
-# ╠═7dd4495e-73fc-11ec-37a7-9fbab661cf88
-# ╠═aab40414-6df7-4f1b-8a86-5d216ff3b61f
-# ╠═6811f544-94ba-4998-9ab7-0c156f042736
-# ╠═062f4a8e-0520-417f-b361-3f79de6c5a66
-# ╠═ddf1b388-e95d-4d8d-ad58-56ac884290e7
-# ╠═5f4e4159-5517-4907-a583-3cdfbbcabbdb
-# ╠═bf68dde3-9148-4b3a-9261-de589885a749
-# ╠═d3176cd6-4ff9-4ec9-8656-161de957557e
-# ╠═960f4d88-d6bc-4a60-aa91-7743edf7453f
-# ╠═4a4adcca-55fd-4866-b1fb-f38f1ba7820b
-# ╟─00000000-0000-0000-0000-000000000001
-# ╟─00000000-0000-0000-0000-000000000002

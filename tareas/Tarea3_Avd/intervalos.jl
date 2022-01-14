@@ -1,8 +1,7 @@
-### A Pluto.jl notebook ###
-# v0.17.3
+module Intervalos
 
-using Markdown
-using InteractiveUtils
+export Intervalo, intervalo_vacio
+export isinterior, ⪽, hull, ⊔
 
 # ╔═╡ 6a13438f-43df-42ac-861f-e3522b35b9a1
 struct Intervalo{T<:Real} <: Real
@@ -378,43 +377,11 @@ begin   ### Neccesary for the use of ForwardDiff, .derivative() in particular.
 end
 
 # ╔═╡ 448b4e4f-c412-4722-beaa-7053ba14bf41
-begin   ### Neccesary for some tests, not sure exactly which ones
+begin   ### Necessary for some tests, not sure exactly which ones
 	import Base: zero
 	function zero(I::Intervalo)
 		return Intervalo(0.0)
 	end
 end
 
-# ╔═╡ 37bc24d3-f7d0-43c1-9a55-88dd754fe49c
-#using ForwardDiff
-
-# ╔═╡ 9334baf3-ea7e-4b05-b8b3-4493188ff46c
-#include("raices.jl")
-
-# ╔═╡ 72270d05-e857-429e-bee4-3e6cda51dfee
-#include("optimizacion.jl")
-
-# ╔═╡ Cell order:
-# ╠═6a13438f-43df-42ac-861f-e3522b35b9a1
-# ╠═d5778f58-7fd7-4763-b10a-1ab0df5e9b2f
-# ╠═707aaa8a-df8d-424a-8555-1e63eadd45a7
-# ╠═d5dd2e80-03a2-41f3-9919-6f88bf385887
-# ╠═21ee3561-710b-4f31-9cbe-dd4d6539f627
-# ╠═829eb20a-b46a-4f54-a20c-8831802e2fa1
-# ╠═e94fbbe6-c740-4fa8-8c44-5d009a1d6c34
-# ╠═b03dc9d7-eca2-4ac3-ae5f-20d3a18d2db8
-# ╠═313975d8-9c31-4217-a284-e4ffbd29563a
-# ╠═a1963843-e33b-4d64-8a81-12015f5c6551
-# ╠═4cf8364c-2b9f-47f0-ace5-8c44a4cf2677
-# ╠═eda9c77d-e724-4633-a4db-4ca3f305c3c7
-# ╠═52c665ab-42ac-441e-939e-518e1fd32431
-# ╠═45297b5b-5d4d-43bc-8a80-c8f03aa8b905
-# ╠═a18c8e6a-f815-488c-b155-ba8f1f6c5e1c
-# ╠═81728a49-6e73-4a13-8ddc-1e34f902df39
-# ╠═e05b819a-0881-4c84-a997-6ddf20bf2425
-# ╠═e90c7275-d490-4c46-ab7c-5f7ee930c296
-# ╠═d317ce68-c353-46f1-9696-9489fd42b66f
-# ╠═448b4e4f-c412-4722-beaa-7053ba14bf41
-# ╠═37bc24d3-f7d0-43c1-9a55-88dd754fe49c
-# ╠═9334baf3-ea7e-4b05-b8b3-4493188ff46c
-# ╠═72270d05-e857-429e-bee4-3e6cda51dfee
+end
