@@ -1,9 +1,9 @@
 
 module Intervalos
 
-import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;    import Base. one;
+import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;    import Base. one; import Base. zero; 
 
-export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida;
+export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida; export  esmonotona; export mid; export diam; export N_divext;
 
 """
 Intervalo.
@@ -481,6 +481,10 @@ function division_extendida(A::Intervalo, B::Intervalo)
 
     one(I::Intervalo{T}) where T<:Real = Intervalo(one(T))
 
+#CERO 
+   
+   zero(I::Intervalo{T}) where T<:Real = Intervalo(zero(T))
+
 
 #FUNCIÓN PARA VERIFICAR QUE F SEA MONÓTONA
 
@@ -502,4 +506,76 @@ function division_extendida(A::Intervalo, B::Intervalo)
 		
 	    end 
                end 
+
+#EN ESTA PARTE AGREGAMOS MÁS FUNCIONES QUE SE USARÁN EN EL MÉTODO DE NEWTON
+
+#Función diam que nos da el diámetro o longitud de un intervalo 
+
+function diam(I::Intervalo)
+           d = I.supremo - I.infimo
+           return d 
+end 
+
+#Función mid que calcula el punto medio de un intervalo y da el intervalo asociado  a ese punto medio 
+
+function mid(I::Intervalo)
+	m = (I.supremo + I.infimo)/2 
+	Im = Intervalo(m)
+	return Im 
+end 
+
+#Operador de Newton intervalar utilizando la división extendida 
+
+function N_divext(f, dom)
+    f′ = ForwardDiff.derivative(f, dom)
+    m = mid(dom)
+    Nm = m .- [division_extendida(f(m), f′)...]
+    return Nm
+end
+
+###########################
+###########################
+BORRADOR DEL MÉTODO DE NEWTON 
+###########################
+###########################
+
+#Aquí incluimos una idea para el método de newton basandonos en que vimos de bisección en la clase, lo incluimos aquí para saber si creen que vamos por buen camino (aún nos falta implementar la parte de unicidad 
+
+#NEWTON INTERVALAR 
+
+function Newton!(v_candidatos, f, tol)
+
+    for _ in eachindex(v_candidatos)
+	dom = popfirst!(v_candidatos) #Extraemos y borramos la primer entrada de `v_candidatoa`
+                vf = f(dom)
+	0 ∉ vf && continue
+	if diam(dom) < tol
+                	push!(v_candidatos, dom) #Se incluye a `dom` (al final de `v_candidatos`)
+                else
+	n0ext = N_divext(f,dom)
+		for n0 in n0ext
+			dom1 = n0 ∩ dom
+			append!(v_candidatos, dom1)
+		end
+                end
+    end
+    return nothing
+end
+
+# Función ceros_newton 
+function ceros_newton(f, dom::Intervalo, tol)
+    bz = !(0 ∈ f(dom))
+    v_candidatos = [dom]  # Vector que incluirá al resultado
+	
+    while !bz
+        Newton!(v_candidatos, f, tol)
+        bz = maximum(diam.(v_candidatos)) < tol 
+    end
+
+    #Filtra los intervalos que no incluyan al 0
+    vind = findall(0 .∈ f.(v_candidatos))
+    return v_candidatos[vind]
+end
+
+
 end 
