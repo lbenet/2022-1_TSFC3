@@ -1,4 +1,4 @@
-module Intervalos
+module intervalos
 
 export Intervalo, intervalo_vacio, isinterior, ⪽, hull, ⊔, division_extendida
 
@@ -28,8 +28,7 @@ struct Intervalo{T<:Real} <: Real
 	end
 end
 
-### Empty interval
-function intervalo_vacio()   ### Without argument
+function intervalo_vacio()   ### Without argument   # Empty interval
 	return Intervalo(NaN)
 end
 function intervalo_vacio(arg::T) where {T<:Real}   ### A type Real 'number' arg
@@ -44,14 +43,12 @@ function intervalo_vacio(I::Intervalo{T}) where {T<:Real}   ### An 'Interval' ar
 	return Intervalo(T(NaN), T(NaN))
 end
 
-### Checking if an interval I is the empty interval
-import Base: isempty
+import Base: isempty   ### Checking if an interval I is the empty interval
 function isempty(I::Intervalo)
 	return isnan(I.infimo)
 end
 
-### [a,b] == [c,d] ⇒ a = b && b = d
-import Base: ==
+import Base: ==   ### [a,b] == [c,d] ⇒ a = b && b = d
 function ==(I1::Intervalo, I2::Intervalo)
 	if isempty(I1) && isempty(I2)   ### Empty interval cases
 		return true
@@ -61,8 +58,7 @@ function ==(I1::Intervalo, I2::Intervalo)
 	end
 end
 
-### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
-import Base: ⊆
+import Base: ⊆   ### [a,b] ⊆ [c,d] ⇒ c ≤ a && b ≤ d
 function ⊆(I1::Intervalo, I2::Intervalo)
 	if isempty(I1)   ### Empty I case
 		return true
@@ -73,8 +69,7 @@ function ⊆(I1::Intervalo, I2::Intervalo)
 	end
 end
 
-### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) == false
-function ⊂(I1::Intervalo, I2::Intervalo)
+function ⊂(I1::Intervalo, I2::Intervalo)   ### [a,b] ⊂ [c,d] ⇒ c ≤ a && b ≤ d   so that   (c = a && b = d) == false
 	if isempty(I1)   ### Empty I case
 		return true
 	elseif (I2.infimo ≤ I1.infimo) && (I1.supremo ≤ I2.supremo)
@@ -101,8 +96,7 @@ function ⊃(I1::Intervalo, I2::Intervalo)
 	end
 end   ### Note: There were no methods for this symbols
 
-### [a,b] ⪽ [c,d] ⇒ c < a && b < d
-function isinterior(I1::Intervalo, I2::Intervalo)
+function isinterior(I1::Intervalo, I2::Intervalo)   ### [a,b] ⪽ [c,d] ⇒ c < a && b < d
 	if isempty(I1)   ### Empty I case
 		return true
 	elseif (I2.infimo < I1.infimo) && (I1.supremo < I2.supremo)
@@ -113,14 +107,12 @@ function isinterior(I1::Intervalo, I2::Intervalo)
 end
 const ⪽ = isinterior
 
-### x ∈ [a,b] ⇒ a ≤ x ≤ b
-import Base: ∈
+import Base: ∈   ### x ∈ [a,b] ⇒ a ≤ x ≤ b
 function ∈(x::Real, I::Intervalo)
 	return (I.infimo ≤ x) && (x ≤ I.supremo)
 end
 
-### [a,b] ⊔ [c,d] = [min(a,c), max(b,d)]
-function hull(I1::Intervalo, I2::Intervalo)
+function hull(I1::Intervalo, I2::Intervalo)   ### [a,b] ⊔ [c,d] = [min(a,c), max(b,d)]
 	if isempty(I1)   ### Empty interval cases
 		return I2
 	elseif isempty(I2)
@@ -135,8 +127,7 @@ function hull(I1::Intervalo, I2::Intervalo)
 end
 const ⊔ = hull   ### Note: There were no methods for this symbol
 
-### [a,b] ∩ [c,d] ⇒ [max(a,c), min(b,d)]
-import Base: ∩
+import Base: ∩   ### [a,b] ∩ [c,d] ⇒ [max(a,c), min(b,d)]
 function ∩(I1::Intervalo, I2::Intervalo)
 	if I1.infimo < I2.infimo && I1.supremo < I2.infimo   ### Disjoint intervals
 		return intervalo_vacio()
@@ -153,8 +144,7 @@ function ∩(I1::Intervalo, I2::Intervalo)
 	end
 end
 
-### [a,b] ∪ [c,d] ⇒ [min(a,c), max(b,d)]
-import Base: ∪
+import Base: ∪   ### [a,b] ∪ [c,d] ⇒ [min(a,c), max(b,d)]
 function ∪(I1::Intervalo, I2::Intervalo)
 	if isempty(I1)   ### Empty interval cases
 		return I2
@@ -169,8 +159,7 @@ function ∪(I1::Intervalo, I2::Intervalo)
 	end
 end   ### Note: Doesn't work with disjoint sets
 
-### [a,b] + [c,d] = [a+c, b+d]   Rounded
-import Base: +
+import Base: +   ### [a,b] + [c,d] = [a+c, b+d]   Rounded
 function +(I1::Intervalo, I2::Intervalo)
 	return Intervalo(prevfloat(I1.infimo+I2.infimo), nextfloat(I1.supremo+I2.supremo))
 end
@@ -184,8 +173,7 @@ function +(I::Intervalo)   ### +[a,b] = [+a,+b]
 	return Intervalo(+(I.infimo), +(I.supremo))
 end
 
-### [a,b] - [c,d] = [a-d, b-c]   Rounded
-import Base: -
+import Base: -   ### [a,b] - [c,d] = [a-d, b-c]   Rounded
 function -(I1::Intervalo, I2::Intervalo)
 	return Intervalo(prevfloat(I1.infimo-I2.supremo), nextfloat(I1.supremo-I2.infimo))
 end
@@ -199,8 +187,7 @@ function -(I::Intervalo)   ### -[a,b] = [-b,-a]
 	return Intervalo(-(I.supremo), -(I.infimo))
 end
 
-### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]   Rounded
-import Base: *
+import Base: *   ### [a,b]*[c,d] = [min(a*c,a*d,b*c,b*d), max(a*c,a*d,b*c,b*d)]   Rounded
 function *(I1::Intervalo, I2::Intervalo)
 	if isempty(I1)   ### Empty intervals cases
 		return I1
@@ -239,8 +226,7 @@ function *(I::Intervalo, r::Real)   ### [a,b]*x = [a*x, b*x]
 	end
 end
 
-### [a,b]/[c,d] = [min(a*1/d, a*1/c, b*1/d, b*1/c), max(a*1/d, a*1(c, b*1/d, b*1/c)]   Rounded
-import Base: /
+import Base: /   ### [a,b]/[c,d] = [min(a*1/d, a*1/c, b*1/d, b*1/c), max(a*1/d, a*1(c, b*1/d, b*1/c)]   Rounded
 function /(I1::Intervalo, I2::Intervalo)
 	if 0.0 ∈ I2
 		if I2 == Intervalo(0.0)   ### [a,b]/[0,0]
@@ -275,8 +261,7 @@ function /(r::Real, I::Intervalo)
 	end
 end
 
-### [a,b]^n = x^n for all x ∈ [a,b]   Rounded
-import Base: ^
+import Base: ^   ### [a,b]^n = x^n for all x ∈ [a,b]   Rounded
 function ^(I::Intervalo, n::Int64)
 	if isempty(I)   ### Empty interval case
 		return I
@@ -330,7 +315,7 @@ function division_extendida(I1::Intervalo, I2::Intervalo)   ### Rounded
 	end
 end
 
-import Base: one   ### Neccesary for the use of ForwardDiff, .derivative() in particular
+import Base: one   ### Neccesary for the use of ForwardDiff, .derivative() in particular.
 function one(I::Intervalo)
 	return Intervalo(1.0)
 end

@@ -1,3 +1,5 @@
+export minimiza, maximiza
+
 """
 	subdividing(Is)
 Given a Intervalo's vector *Is*, for each element of it, subdivide them at half and return another Intervalo's vector with all the Intervalo's sub-intervals.
@@ -14,7 +16,7 @@ end
 
 """
 	extrems(f, V)
-Calculate each extreme point of the function *f* for each Intervalo in *V*.
+Find the extrem point of the function *f* for each Intervalo in the vector *V*.
 """
 function extrems(f, V)
 	l = length(V)
