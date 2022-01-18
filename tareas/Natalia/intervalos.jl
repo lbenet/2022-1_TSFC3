@@ -1,9 +1,8 @@
 
 module Intervalos
 
-import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;    import Base. one; import Base. zero; 
-
-export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida; export  esmonotona; export mid; export diam; export N_divext;
+import Base: ∪, ∩, ∈, ⊆, ==, +, -, *, /, ^, isempty, one, zero
+export Intervalo, intervalo_vacio, isint, hull, ⪽, ⊔, inv, mag, mig, division_extendida, esmonotona, mid, diam
 
 """
 Intervalo.
@@ -489,22 +488,9 @@ function division_extendida(A::Intervalo, B::Intervalo)
 #FUNCIÓN PARA VERIFICAR QUE F SEA MONÓTONA
 
 	function esmonotona(f::Function,D::Intervalo)
-	
-	    R=ForwardDiff.derivative(f,D)
-	
-	    if R.infimo < 0 && R.supremo > 0
-		
-			return false 
-	
-	    elseif R.infimo > 0 && R.supremo < 0
-		
-			return false
-		
-	    else 
-		
-			return true
-		
-	    end 
+		R=ForwardDiff.derivative(f,D)
+	                (R.infimo < 0 && R.supremo > 0) || (R.infimo > 0 && R.supremo < 0) && return false
+		return true
                end 
 
 #EN ESTA PARTE AGREGAMOS MÁS FUNCIONES QUE SE USARÁN EN EL MÉTODO DE NEWTON
@@ -523,59 +509,6 @@ function mid(I::Intervalo)
 	Im = Intervalo(m)
 	return Im 
 end 
-
-#Operador de Newton intervalar utilizando la división extendida 
-
-function N_divext(f, dom)
-    f′ = ForwardDiff.derivative(f, dom)
-    m = mid(dom)
-    Nm = m .- [division_extendida(f(m), f′)...]
-    return Nm
-end
-
-###########################
-###########################
-BORRADOR DEL MÉTODO DE NEWTON 
-###########################
-###########################
-
-#Aquí incluimos una idea para el método de newton basandonos en que vimos de bisección en la clase, lo incluimos aquí para saber si creen que vamos por buen camino (aún nos falta implementar la parte de unicidad 
-
-#NEWTON INTERVALAR 
-
-function Newton!(v_candidatos, f, tol)
-
-    for _ in eachindex(v_candidatos)
-	dom = popfirst!(v_candidatos) #Extraemos y borramos la primer entrada de `v_candidatoa`
-                vf = f(dom)
-	0 ∉ vf && continue
-	if diam(dom) < tol
-                	push!(v_candidatos, dom) #Se incluye a `dom` (al final de `v_candidatos`)
-                else
-	n0ext = N_divext(f,dom)
-		for n0 in n0ext
-			dom1 = n0 ∩ dom
-			append!(v_candidatos, dom1)
-		end
-                end
-    end
-    return nothing
-end
-
-# Función ceros_newton 
-function ceros_newton(f, dom::Intervalo, tol)
-    bz = !(0 ∈ f(dom))
-    v_candidatos = [dom]  # Vector que incluirá al resultado
-	
-    while !bz
-        Newton!(v_candidatos, f, tol)
-        bz = maximum(diam.(v_candidatos)) < tol 
-    end
-
-    #Filtra los intervalos que no incluyan al 0
-    vind = findall(0 .∈ f.(v_candidatos))
-    return v_candidatos[vind]
-end
 
 
 end 
