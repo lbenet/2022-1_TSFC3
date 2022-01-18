@@ -3,7 +3,7 @@ module Intervalos
 
 import Base: ∪, ∩, ∈, ⊆, ==, +, -, *, /, ^, isempty, one, zero
 export Intervalo, intervalo_vacio, isint, hull, ⪽, ⊔, inv, mag, mig, division_extendida, esmonotona, mid, diam
-
+using ForwardDiff
 """
 Intervalo.
 	
@@ -488,10 +488,21 @@ function division_extendida(A::Intervalo, B::Intervalo)
 #FUNCIÓN PARA VERIFICAR QUE F SEA MONÓTONA
 
 	function esmonotona(f::Function,D::Intervalo)
-		R=ForwardDiff.derivative(f,D)
-	                (R.infimo < 0 && R.supremo > 0) || (R.infimo > 0 && R.supremo < 0) && return false
-		return true
-               end 
+	
+	    R=ForwardDiff.derivative(f,D)
+	
+	    if R.infimo < 0 && R.supremo > 0
+		
+			return false 
+	
+	    elseif R.infimo > 0 && R.supremo < 0
+		
+			return false
+		
+	    else 
+			return true
+	       end 
+                end 
 
 #EN ESTA PARTE AGREGAMOS MÁS FUNCIONES QUE SE USARÁN EN EL MÉTODO DE NEWTON
 
