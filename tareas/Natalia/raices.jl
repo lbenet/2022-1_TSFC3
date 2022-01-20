@@ -1,4 +1,3 @@
-using ForwardDiff
 
 export Raiz, ceros_newton
 

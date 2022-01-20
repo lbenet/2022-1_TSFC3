@@ -3,6 +3,7 @@ module Intervalos
 
 import Base: ∪, ∩, ∈, ⊆, ==, +, -, *, /, ^, isempty, one, zero
 export Intervalo, intervalo_vacio, isint, hull, ⪽, ⊔, inv, mag, mig, division_extendida, esmonotona, mid, diam
+
 using ForwardDiff
 """
 Intervalo.
@@ -521,5 +522,6 @@ function mid(I::Intervalo)
 	return Im 
 end 
 
+include("raices.jl")
 
 end 
