@@ -1,14 +1,21 @@
 using ForwardDiff
 
+export Raiz, ceros_newton
+
+
+"""
+   Estructura Raiz
+   La estructura Raiz define a un vector o "arreglo" el cual consiste de dos entradas
+   la primera es: 
+   -raiz la cual es de tipo Intervalo 
+   -unicidad la cual es de tipo booleano e indicara si se cumple en esta componente 
+   la unicidad
+"""
+
 struct Raiz 
 	raiz::Intervalo; unicidad::Bool 
 end 
 
-
-
-###########################
-#BORRADOR DEL MÉTODO DE NEWTON 
-###########################
 
 
 #Operador de Newton intervalar utilizando la división extendida 
@@ -57,7 +64,8 @@ function Newton2(f, dom::Intervalo, tol)
     return v_candidatos[vind]
 end
 
-function ceros_newton(dom::Intervalo, tol)
+
+function ceros_newton(f, dom::Intervalo, tol=1/1024)
 	v_candidatos = Newton2(f, dom, tol)
 	unicidad = esmonotona.(f, v_candidatos)
 	return Raiz.(v_candidatos, unicidad)
