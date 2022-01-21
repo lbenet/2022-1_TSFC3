@@ -1,4 +1,4 @@
-module intervalos
+module Intervalos
 
 export Intervalo, intervalo_vacio, isinterior, ⪽, hull, ⊔, division_extendida
 
@@ -281,7 +281,7 @@ function ^(I::Intervalo, n::Int64)
 	elseif 0.0 ∈ I   ### 0 ∈ [a,b] case
 		p_inf = I.infimo^n;   p_sup = I.supremo^n
 		if n%2 == 0   ### even power case
-			return Intervalo(0.0, nextfloat(p_sup))
+			return Intervalo(0.0, nextfloat(max(p_inf,p_sup)))
 		else   ### odd power case
 			return Intervalo(prevfloat(p_inf), nextfloat(p_sup))
 		end
