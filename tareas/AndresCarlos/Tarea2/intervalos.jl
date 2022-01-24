@@ -422,8 +422,8 @@ end
 					#break
 				else
 					potinf = zero(a.infimo)
-				    potsup = max(a.infimo^m,a.supremo^m)
-					return Intervalo(potinf, potsup)
+				    	potsup = max(a.infimo^m,a.supremo^m)
+					return Intervalo(potinf, nextfloat(potsup))
 				end
 					
 				
