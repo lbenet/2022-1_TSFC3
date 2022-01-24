@@ -1,9 +1,14 @@
-
 module Intervalos
 
 export Intervalo, intervalo_vacio
 
-export ⪽, ⊔, division_extendida, /
+export ⪽, ⊔
+
+#using Markdown
+
+#using InteractiveUtils
+
+
 
 	
 	"""
@@ -31,7 +36,7 @@ struct Intervalo{T<:Real} #Definimos la estructura, tendra un subtipo menor a Re
 			
 		end
 		
-
+end
 		
 		###########################
 		
@@ -69,11 +74,8 @@ struct Intervalo{T<:Real} #Definimos la estructura, tendra un subtipo menor a Re
 		function intervalo_vacio(I::Intervalo{T}) where {T<:Real} #Recibe un
 			return Intervalo(T(NaN), T(NaN))                      #intervalo
 		end
-	
-	
-########			########			#######
 
-############################# Vemos si algun conjunto es vacio ########
+############################# Vemos si algun conjunto es vacio ###################
 		
 		function esvacio(a::Intervalo)
 
@@ -481,16 +483,14 @@ struct Intervalo{T<:Real} #Definimos la estructura, tendra un subtipo menor a Re
 		#elseif 0 > a.supremo || 0 < a.infimo && b.infimo == 0 && b.supremo == 0
 			#return intervalo_vacio()  ##### Salida #####
 		elseif (a.supremo < 0 || a.infimo > 0) && b.infimo == 0 && b.supremo == 0
-			return intervalo_vacio()  ##### Salida #####
+			return (intervalo_vacio(),)  ##### Salida #####
 		elseif isnan(b.infimo) && isnan(b.supremo)
-			return intervalo_vacio()  ##### Salida #####
+			return (intervalo_vacio(),)  ##### Salida #####
 		#elseif a.supremo == 0.0 && b.supremo == 0.0 && a.infimo == 0.0 && b.infimo == 0.0
 			#return intervalo_vacio()  ##### Salida ##### 
 		end
 		
     end
-	
-	end
 	
 #####################################################################
 
