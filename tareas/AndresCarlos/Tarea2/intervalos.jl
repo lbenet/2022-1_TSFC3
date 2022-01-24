@@ -1,6 +1,6 @@
 module Intervalos
 
-export Intervalo, intervalo_vacio
+export Intervalo, intervalo_vacio, division_extendida, hull
 
 export ⪽, ⊔
 
