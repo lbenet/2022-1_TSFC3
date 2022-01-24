@@ -1,23 +1,10 @@
-### A Pluto.jl notebook ###
-# v0.16.1
 
-using Markdown
-using InteractiveUtils
-
-# ╔═╡ 4b284cea-50cb-11ec-35ae-37833d8ea5c5
 module Intervalos
 
 export Intervalo, intervalo_vacio
 
 export ⪽, ⊔, division_extendida, /
 
-#using Markdown
-
-#using InteractiveUtils
-
-
-
-begin 
 	
 	"""
 	             Intervalo
@@ -60,13 +47,10 @@ struct Intervalo{T<:Real} #Definimos la estructura, tendra un subtipo menor a Re
 			return Intervalo(mismo, mismo)     #nos regresa el intervalo del punto
 		end
 	
-end
-	
-#end
 
 ########
-
-begin      ###### Intervalo vacio ######
+	
+############################# Intervalo vacio #############################
 		
 		function intervalo_vacio()    #Para el caso sin argumentos 
 			return Intervalo(NaN)      
@@ -85,12 +69,11 @@ begin      ###### Intervalo vacio ######
 		function intervalo_vacio(I::Intervalo{T}) where {T<:Real} #Recibe un
 			return Intervalo(T(NaN), T(NaN))                      #intervalo
 		end
-end
-		
+	
 	
 ########			########			#######
-begin
-		###### Vemos si algun conjunto es vacio ########
+
+############################# Vemos si algun conjunto es vacio ########
 		
 		function esvacio(a::Intervalo)
 
@@ -102,13 +85,9 @@ begin
 			#¿Es necesario continuar con los infinitos o solo con ifnan()?
 		end
 		
-end
-	
 
 	
-begin
-	
-	#### Igualdad de intervalos ####
+########################### Igualdad de intervalos ###########################
 	
 	import Base: == #No se lo entiendo del todo pero me pedia importar :V
 	
@@ -121,11 +100,8 @@ begin
 		
 	end
 	
-end
 
-
-begin
-	#Union de intervalos
+######################## Union de intervalos #######################
 	
 	import Base: ∪
 	
@@ -146,17 +122,11 @@ begin
 	    
     end
 	
-end
 
-
-begin 
 	const ⊔ = ∪  
 	const hull = ∪ 
-end
-	
 
-begin
-	#Intersección de intervalos
+######################## Intersección de intervalos #######################
 	
 	import Base: ∩
 	
@@ -181,12 +151,9 @@ begin
 	
 	end 
 	
-end
-	
 
-begin
 	#⊔
-	##### Pertenencia de elementos ####
+############################ Pertenencia de elementos ###########################
 	
 	import Base: ∈
 	
@@ -200,10 +167,8 @@ begin
 		
 	end
 	
-end
-	
-begin
-	##### Contención de elementos ####
+
+############################ Contención de elementos ###########################
 	
 	function ⪽(a::Intervalo, b::Intervalo)
 		#definimos la función "si es interior"
@@ -217,11 +182,9 @@ begin
 		
 	end
 	
-end
+
 	
-begin
-	
-	#### Contención inversa ####
+########################### Contención inversa ###########################
 	
 	function ⊃(a::Intervalo, b::Intervalo) #Definimos el operador logico ⊃
 		if esvacio(b)
@@ -238,10 +201,8 @@ begin
 		
 	end
 	
-end
-	
-begin
-	### contenido o igual ####
+
+########################## contenido o igual ###########################
 	
 	import Base: ⊆
 	
@@ -256,10 +217,8 @@ begin
 	
 	end
 	
-end
-	
-begin
-	#### Suma de intervalos ####
+
+########################### Suma de intervalos ###########################
 	
 	import Base: + 
 	
@@ -276,10 +235,7 @@ begin
 		
     end
 		
-end
-	
-begin
-	
+
 	
 	import Base: + 
 	
@@ -296,10 +252,6 @@ begin
 		
 	end
 		
-end
-	
-begin
-	
 	
 	import Base: + 
 	
@@ -313,11 +265,7 @@ begin
 		end
 		
 	end
-		
-end
-	
-begin
-	
+
 	
 	import Base: + 
 	
@@ -329,12 +277,9 @@ begin
 		end
 		
 	end
-	
-end
 
 
-begin
-	#### Resta de intervalos ####
+########################### Resta de intervalos ###########################
 	
 	import Base: -   #importamos de Base el -
 	
@@ -377,11 +322,8 @@ begin
 		return Intervalo( min(-a.supremo, -a.infimo) , max(-a.infimo, -a.supremo) ) 
 	end
 	
-end
-
-begin
 	
-	#### Multiplicación de intervalos ####
+########################### Multiplicación de intervalos ###########################
 	
 	import Base: * #importamos de Base el *
 	
@@ -421,11 +363,10 @@ begin
 		
     end
 	
-end
+
+########################### División de intervalos ###########################
 	
-	#### División de intervalos ####
-	
-begin
+
         import Base: /
 		function /( r::R, a::Intervalo ) where{R<:Real}
 			if a == Intervalo(0.0)
@@ -438,9 +379,7 @@ begin
 			
 		end
 		
-end
-	
-begin
+
 		import Base: /
 		function /(a::Intervalo, b::Intervalo)
 			if esvacio(b)
@@ -453,7 +392,7 @@ begin
 				elseif b.infimo == 0.0 < b.supremo 
 					c = Intervalo(1/b.supremo, Inf)
 					return Intervalo( prevfloat(min(a.infimo*c.infimo, a.supremo*c.infimo) ), Inf )
-				elseif b.infimo ≤ 0.0 ≤ b.supremo 
+				elseif b.infimo ≤ 0.0 ≤ b.supremo ###
 					c = Intervalo( -Inf, 1/b.infimo )
 					return Intervalo( -Inf, nextfloat( max(a.infimo*c.supremo, a.supremo*c.supremo) ) )
 				end
@@ -464,21 +403,10 @@ begin
 			
 		end
 		
-end
+
+########################### Potencias de intervalos ###########################
 	
-begin
-		
-	import Base: inv
-	
-	function inv(a::Intervalo)
-		return Intervalo(1.0)/a
-	end
-	
-end
-	
-	
-begin
-	#### Potencias de intervalos ####
+	import Base: ^
 	
 	import Base: ^
 	
@@ -490,12 +418,12 @@ begin
 				if m==0
 				    potinf = a.infimo^m
 				    potsup = a.supremo^m
-					return Intervalo(prevfloat(potinf), nextfloat(potsup))
+					return Intervalo(potinf, potsup)
 					#break
 				else
 					potinf = zero(a.infimo)
-				    potsup = max(a.infimo^m,a.supremo^m)
-					return Intervalo(prevfloat(potinf), nextfloat(potsup))
+				        potsup = max(a.infimo^m,a.supremo^m)
+					return Intervalo(potinf, nextfloat(potsup))
 				end
 					
 				
@@ -523,168 +451,57 @@ begin
 		
 	end
 	
-end	
-		
-begin
-	#### División de intervalos extendida ####
+
+########################### División de intervalos extendida ########################
 	
 	
 	function division_extendida(a::Intervalo, b::Intervalo) 
 			#Definimos la función división
-		
+		#@assert b.infimo < 0 && b.infimo > 0 && b.supremo < 0 && b.supremo > 0 #Que no haya ceros
 		if b.supremo < 0 || 0 < b.infimo
 	    	divinf = min(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo) )
 			divsup = max(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo) )
-	    	return ( Intervalo( prevfloat(divinf), nextfloat(divsup) ), ) ##### Salida #####
+	    	return Intervalo( prevfloat(divinf), nextfloat(divsup) ) ##### Salida #####
 		elseif (a.infimo ≤ 0 && 0 ≤ a.supremo) && (b.infimo ≤ 0 && 0 ≤ b.supremo)
-			return ( Intervalo(-Inf, Inf), ) ##### Salida #####
-		
+			return Intervalo(-Inf, Inf) ##### Salida #####
+		#elseif a.infimo < 0 < a.supremo && b.infimo < 0 < b.supremo
+			#return Intervalo(-Inf, Inf) ##### Salida #####
 		elseif a.supremo < 0 && b.infimo < b.supremo == 0
-			return ( Intervalo( prevfloat(a.supremo/b.infimo), Inf), ) ##### Salida #####
+			return Intervalo( prevfloat(a.supremo/b.infimo), Inf) ##### Salida #####
 		elseif a.supremo < 0 && b.infimo < 0 < b.supremo
 			return ( Intervalo(-Inf, nextfloat(a.supremo/b.supremo)), Intervalo( prevfloat(a.supremo/b.infimo), Inf) ) ##### Salida #####
 		elseif a.supremo < 0 && 0 == b.infimo < b.supremo
-			return ( Intervalo(-Inf, nextfloat(a.supremo/b.supremo) ), ) ##### Salida #####
+			return Intervalo(-Inf, nextfloat(a.supremo/b.supremo) ) ##### Salida #####
 		elseif 0 < a.infimo && b.infimo < b.supremo == 0
-			return ( Intervalo( -Inf, nextfloat(a.infimo/b.infimo) ), ) ##### Salida #####
+			return Intervalo( -Inf, nextfloat(a.infimo/b.infimo) ) ##### Salida #####
 		elseif 0 < a.infimo && b.infimo < 0 < b.supremo
 			return (Intervalo(-Inf, nextfloat(a.infimo/b.infimo) ), Intervalo( prevfloat(a.infimo/b.supremo), Inf) ) # ( Intervalo(-Inf, nextfloat(a.infimo/b.infimo) ), Intervalo( prevfloat(a.infimo/b.supremo), Inf) )
 		elseif 0 < a.infimo && 0 == b.infimo < b.supremo 
-			return ( Intervalo(prevfloat(a.infimo/b.supremo), Inf), ) ##### Salida #####
-		
+			return Intervalo(prevfloat(a.infimo/b.supremo), Inf) ##### Salida #####
+		#elseif 0 > a.supremo || 0 < a.infimo && b.infimo == 0 && b.supremo == 0
+			#return intervalo_vacio()  ##### Salida #####
 		elseif (a.supremo < 0 || a.infimo > 0) && b.infimo == 0 && b.supremo == 0
-			return ( intervalo_vacio(), )  ##### Salida #####
+			return intervalo_vacio()  ##### Salida #####
 		elseif isnan(b.infimo) && isnan(b.supremo)
-			return ( intervalo_vacio(), )  ##### Salida #####
-		
+			return intervalo_vacio()  ##### Salida #####
+		#elseif a.supremo == 0.0 && b.supremo == 0.0 && a.infimo == 0.0 && b.infimo == 0.0
+			#return intervalo_vacio()  ##### Salida ##### 
 		end
 		
     end
 	
 	end
 	
-end
+#####################################################################
 
-end
-
-# ╔═╡ 9dc7e62e-09d9-434f-b049-9b998f80a87a
-#=
-begin
+		
+	import Base: inv
 	
-u = Intervalo(1.0)
-z = Intervalo(0.0)
-a = Intervalo(1.5, 2.5)
-b = Intervalo(1, 3)
-c = Intervalo(BigFloat("0.1"), big(0.1))
-d = Intervalo(-1, 1)
-emptyFl = intervalo_vacio(Float64)
-emptyB = intervalo_vacio(BigFloat)
+	function inv(a::Intervalo)
+		return Intervalo(1.0)/a
+	end
 	
-end =#
+#####################################################################
 
-# ╔═╡ a5007748-66b3-41b9-bbdf-af88f7a350ba
-#=typeof(a) == Intervalo{Float64}
-getfield(a, :infimo) == 1.5
-getfield(a, :supremo) == 2.5
 
-typeof(b) == Intervalo{Float64}
-    @test getfield(b, :infimo) == 1.0
-    @test getfield(b, :supremo) == 3.0
-
-    @test typeof(c) == Intervalo{BigFloat}
-    @test getfield(c, :infimo) == BigFloat("0.1")
-    @test getfield(c, :supremo) == big(0.1)
-
-    @test typeof(emptyFl) == Intervalo{Float64}
-    @test typeof(emptyB) == Intervalo{BigFloat}
-
-    @test u == Intervalo(1.0)
-    @test z == Intervalo(0.0)
-    @test z == Intervalo(big(0.0)) =#
-
-# ╔═╡ 6213641c-e283-46de-8101-e228e7c3eb67
-#=@test a == a
-    @test a !== b
-    @test c == c
-    @test emptyFl == emptyB
-    @test a ⊆ a
-    @test a ⊆ b
-    @test emptyFl ⊆ b
-    @test b ⊇ a
-    @test c ⊆ c
-    @test !(c ⊆ b) && !(b ⊆ c)
-    @test a ⪽ b
-    @test emptyFl ⪽ b
-    @test !(c ⪽ c)
-    @test a ∪ b == b
-    @test a ⊔ b == b
-    @test a ∪ emptyFl == a
-    @test c ⊔ emptyB == c
-    @test a ∩ b == a
-    @test a ∩ emptyFl == emptyFl
-    @test a ∩ c == emptyB
-    @test 0 ∈ z
-    @test 2 ∈ a
-    @test 3 ∉ a
-#0.1 ∈ c
 end
-=#
-
-# ╔═╡ 62facbc9-8804-47e3-9915-c785153847b8
-### "Operaciones aritméticas" begin
-#emptyFl + z == emptyFl
-#z + z == Intervalo(prevfloat(0.0), nextfloat(0.0))
-#u + z == u + 0.0
-#z - u == 0.0-u
-#-u ⪽ z - u
-#b + 1 == 1.0 + b == Intervalo(prevfloat(2.0), nextfloat(4.0))
-#d ⪽ 2*(a - 2)
-#c - 0.1 !== z
-#emptyFl * z == emptyFl
-#Intervalo(0.1, 0.1) ⪽ 0.1 * u
-#Intervalo(-0.1, 0.1) ⪽ d * 0.1
-#d * (a + b) ⊆ d*a + d*b
-#d^1 == d   
-#d^2 == Intervalo(0, nextfloat(1.0))
-#emptyB^2 == emptyB
-#emptyFl^3 == emptyFl
-
-# ╔═╡ c63b3b84-d536-4d42-9697-a21d7fa2b79c
-#Intervalo(0,Inf) * u == Intervalo(prevfloat(0.0), Inf)
-#Intervalo(-Inf,Inf) * z == z
-#emptyFl * z == emptyFl
-#d ⪽ d*d
-#d ⪽ d^3
-#d^4 == d^2
-#a / emptyFl == emptyFl
-#emptyB / c == emptyB
-#emptyFl / emptyFl == emptyFl
-#u/d == Intervalo(-Inf, Inf)
-#inv(Intervalo(0.0)) == emptyFl
-#0.5 ∈ u/a
-#1 ∈ a/a
-#c^(-1) == 1/c 
-#inv(a) == 1/a
-#(a-1)*(a-2) ⪽ (a*a -3*a + 3)
-#a/d == Intervalo(-Inf, Inf)
-#z/z == intervalo_vacio(z)
-#u ⪽ 1/u
-
-##########
-
-#all(division_extendida(u,z) .== (emptyFl,))        
-#all(division_extendida(z,z) .== (Intervalo(-Inf,Inf),))
-#all(division_extendida(u,u) .== (u/u,)) 
-#all(division_extendida(u, Intervalo(0,1)) .== (u/Intervalo(0,1),)) 
-##########
-
-#division_extendida(u, Intervalo(0,1)) == u/Intervalo(0,1)
-#all(division_extendida(u,d) .== (u/Intervalo(-1,0), u/Intervalo(0,1)))
-
-# ╔═╡ Cell order:
-# ╠═4b284cea-50cb-11ec-35ae-37833d8ea5c5
-# ╠═9dc7e62e-09d9-434f-b049-9b998f80a87a
-# ╠═a5007748-66b3-41b9-bbdf-af88f7a350ba
-# ╠═6213641c-e283-46de-8101-e228e7c3eb67
-# ╠═62facbc9-8804-47e3-9915-c785153847b8
-# ╠═c63b3b84-d536-4d42-9697-a21d7fa2b79c
