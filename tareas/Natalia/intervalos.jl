@@ -377,105 +377,94 @@ end
 
 # Potencias enteras y no negativas jeje 
 
-	function ^(A::Intervalo, n::Int64)
-	
-	if n == 0
-			
-	    I = Intervalo(1,1)
-    
-	    return I 
-		
-    elseif isempty(A)
-       
-         return A
+import Base: ^
 
-	elseif n == 1
-			
-	         I = A
-			
-	        return A
-	
-	elseif n == -1
-			
-	        return inv(A)
-	
-	elseif 0 ∈ A
+function ^(a::Intervalo, m::Int64)
 
-                       if n%2 == 0 
+	if rem(m, 2) == 0 && m > 0#Vemos si la potencia es par y positiva
 
-                          return Intervalo(0, nextfloat(mag(A)^n))
+	    if a.infimo < 0 && a.supremo > 0
+			if m==0
+			    potinf = a.infimo^m
+			    potsup = a.supremo^m
+				return Intervalo((potinf), nextfloat(potsup))
+				#break
+			else
+				potinf = zero(a.infimo)
+				potsup = max(a.infimo^m,a.supremo^m)
+				return Intervalo(potinf, nextfloat(potsup))
+			end
 
-                       else 
 
-                         return  Intervalo(prevfloat(A.infimo^n), nextfloat(A.supremo^n))
+		else
+			potinf = min(a.infimo^m,a.supremo^m)
+			potsup = max(a.infimo^m,a.supremo^m)
+			return Intervalo(prevfloat(potinf), nextfloat(potsup))
 
-                      end
 
-               elseif mod(n,2) == 0
-			    
-	         I = Intervalo(prevfloat(mig(A)^n), nextfloat(mag(A)^n)) #PAR
-	         
-             return I
-     else 
-		
-	I = Intervalo(prevfloat(A.infimo^n), nextfloat(A.supremo^n)) #IMPAR
-                          
-             return I 		
-     end	
-end  
+
+	    end
+
+	elseif m < 0
+
+		return 1/a^-m  #inv(a)
+
+
+	elseif m == 1
+		return a
+	elseif esvacio(a)
+		return intervalo_vacio()
+
+	else rem(m, 2) != 0 && m >0 #Vemos si la potencia es impar
+		potinf = min( a.infimo^m, a.supremo^m )
+		potsup = max( a.infimo^m, a.supremo^m)
+		return Intervalo(prevfloat(potinf), nextfloat(potsup))
+	end
+
+
+
+end
 
 
 #División extendida 
 
-function division_extendida(A::Intervalo, B::Intervalo)
-		
-		if 0 ∉ B
-			I = A*Intervalo(1/B.supremo,1/B.infimo)
-			
-			return (I,)
-			
-		elseif 0 ∈ A && 0 ∈ B
-			
-			return (Intervalo(-Inf,Inf),)
+########################### División de intervalos extendida ########################
+	
+	
+function division_extendida(a::Intervalo, b::Intervalo) 
+		#Definimos la función división
+	#@assert b.infimo < 0 && b.infimo > 0 && b.supremo < 0 && b.supremo > 0 #Que no haya ceros
+	if b.supremo < 0 || 0 < b.infimo
+	divinf = min(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo) )
+		divsup = max(a.infimo*(1/b.supremo), a.infimo*(1/b.infimo), a.supremo*(1/b.supremo), a.supremo*(1/b.infimo) )
+	return ( Intervalo( prevfloat(divinf), nextfloat(divsup) ), ) ##### Salida #####
+	elseif (a.infimo ≤ 0 && 0 ≤ a.supremo) && (b.infimo ≤ 0 && 0 ≤ b.supremo)
+		return ( Intervalo(-Inf, Inf), ) ##### Salida #####
+	#elseif a.infimo < 0 < a.supremo && b.infimo < 0 < b.supremo
+		#return Intervalo(-Inf, Inf) ##### Salida #####
+	elseif a.supremo < 0 && b.infimo < b.supremo == 0
+		return ( Intervalo( prevfloat(a.supremo/b.infimo), Inf), ) ##### Salida #####
+	elseif a.supremo < 0 && b.infimo < 0 < b.supremo
+		return ( Intervalo(-Inf, nextfloat(a.supremo/b.supremo)), Intervalo( prevfloat(a.supremo/b.infimo), Inf) ) ##### Salida #####
+	elseif a.supremo < 0 && 0 == b.infimo < b.supremo
+		return ( Intervalo(-Inf, nextfloat(a.supremo/b.supremo) ), ) ##### Salida #####
+	elseif 0 < a.infimo && b.infimo < b.supremo == 0
+		return ( Intervalo( -Inf, nextfloat(a.infimo/b.infimo) ), ) ##### Salida #####
+	elseif 0 < a.infimo && b.infimo < 0 < b.supremo
+		return (Intervalo(-Inf, nextfloat(a.infimo/b.infimo) ), Intervalo( prevfloat(a.infimo/b.supremo), Inf) ) # ( Intervalo(-Inf, nextfloat(a.infimo/b.infimo) ), Intervalo( prevfloat(a.infimo/b.supremo), Inf) )
+	elseif 0 < a.infimo && 0 == b.infimo < b.supremo 
+		return ( Intervalo(prevfloat(a.infimo/b.supremo), Inf), ) ##### Salida #####
+	#elseif 0 > a.supremo || 0 < a.infimo && b.infimo == 0 && b.supremo == 0
+		#return intervalo_vacio()  ##### Salida #####
+	elseif (a.supremo < 0 || a.infimo > 0) && b.infimo == 0 && b.supremo == 0
+		return ( intervalo_vacio(), )  ##### Salida #####
+	elseif isnan(b.infimo) && isnan(b.supremo)
+		return ( intervalo_vacio(), )  ##### Salida #####
+	#elseif a.supremo == 0.0 && b.supremo == 0.0 && a.infimo == 0.0 && b.infimo == 0.0
+		#return intervalo_vacio()  ##### Salida ##### 
+	end
 
-                               elseif A.supremo < 0 && B.infimo<B.supremo == 0
- 
-                                               return (Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
-			
-		elseif (A.supremo < 0) && (B.infimo < 0 < B.supremo) 
-			
-			return (Intervalo(-Inf,nextfloat(A.supremo/B.supremo)),Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
-		
-		elseif A.supremo < 0 && 0 == B.infimo < B.supremo
-			
-			return (Intervalo(-Inf, nextfloat(A.supremo/B.supremo)),)
-			
-		elseif 0 < A.infimo && 0 == B.supremo > B.infimo 
-			
-			return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)),)
-			
-		elseif (0 < A.infimo) && (B.infimo < 0 < B.supremo)
-
-                                              if  1/B.supremo > 1/B.infimo 
-                
-                                                    return (Intervalo(-Inf, Inf), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
-
-                                              else 
-			
-		                return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
-			
-                                              end
- 
-		elseif B.infimo == B.supremo == 0 && 0 ∉ A 
-			
-			return (intervalo_vacio(BigFloat),)
-			
-		else 
-			
-			return (Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
-		
-		end 
-	end 
+end
 
 #ONE 
 
