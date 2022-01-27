@@ -537,8 +537,10 @@ function mid(I::Intervalo)
 	m = (I.supremo + I.infimo)/2 
 	Im = Intervalo(m)
 	return Im 
-end  
+end 
+ 
 
 include("raices.jl")
+include("optimizacion.jl")
 
 end 
