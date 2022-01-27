@@ -69,7 +69,8 @@ function Newton!(v_candidatos, f, tol)
 	n0ext = N_divext(f,dom) #Definimos 
 		for n0 in n0ext #iteramos sobre cada valor que adquiera n0ext
 			dom1 = n0 ∩ dom #el nuevo dominio sera la intersección de n0 con dom
-			append!(v_candidatos, dom1) 
+			isempty(dom1) && continue 
+			push!(v_candidatos, dom1)
 		end
         end
     end
