@@ -1,9 +1,10 @@
 
 module Intervalos
 
-import Base. ∪; import Base. ∩; import Base. ∈; import Base. ⊆; import Base. ==; import Base. +; import Base. -; import Base. *; import Base. /; import Base. ^;  import Base. isempty;
+import Base: ∪, ∩, ∈, ⊆, ==, +, -, *, /, ^, isempty, one, zero
+export Intervalo, intervalo_vacio, isint, hull, ⪽, ⊔, inv, mag, mig, division_extendida, esmonotona, mid, diam
 
-export Intervalo; export intervalo_vacio; export isint; export hull; export  ⪽; export ⊔; export inv; export mag; export mig; export division_extendida;
+using ForwardDiff
 
 """
 Intervalo.
@@ -12,7 +13,7 @@ Estructura básica de un intervalo, dado su ínfimo = mínimo y supremo = máxim
 *acotados* de la recta real.
 
 """
-struct Intervalo{T <: Real}
+struct Intervalo{T <: Real} <: Real
 		
     infimo :: T
     supremo :: T 
@@ -295,42 +296,65 @@ end
 
 
 #División de intervalos /
-
 function /(A::Intervalo, B::Intervalo)
               
-               if isempty(A) || isempty(B)
+           if isempty(A) || isempty(B)
 
                      return intervalo_vacio(BigFloat)
 
-               elseif A.infimo == B.infimo == 0 && A.supremo == B.supremo == 0
-
-                     return intervalo_vacio(BigFloat)
-
-               elseif 1/B.supremo > 1/B.infimo 
-                
-                    return Intervalo(-Inf, Inf)
-              else 
-                        I = A*Intervalo(1/B.supremo,1/B.infimo)
+		   elseif 0.0 ∈ B 
+			
+				if B == Intervalo(0.0)
+				
+					return intervalo_vacio(BigFloat)
+				
+				elseif B.infimo < 0.0 < B.supremo  
+				
+					return Intervalo(-Inf, Inf)
+				
+				elseif B.infimo == 0.0 < B.supremo   
+				
+					I = Intervalo(1/B.supremo, Inf)
+				
+					return Intervalo(prevfloat(min(A.infimo*I.infimo, A.supremo*I.infimo)), Inf)
+				
+				elseif B.infimo < 0.0 == B.supremo  
+				
+					I = Intervalo(-Inf, 1/B.infimo)
+				
+					return Intervalo(-Inf, nextfloat(max(A.infimo*I.supremo, A.supremo*I.supremo)))
+				end
+           else 
+                  I = A*Intervalo(1/B.supremo,1/B.infimo)
 			
 	       return I
 
-               end 
+           end 
 end 
-	function /(x::Real, B::Intervalo)
+
+
+function /(A::Real, B::Intervalo)
 		
-		I = x*Intervalo(1/B.supremo,1/B.infimo)
-		
-		return I
-		
-	end 
+	if B == Intervalo(0.0)
+			
+		return intervalo_vacio(BigFloat)
+			
+	elseif 0 ≤ A  
+			
+		return Intervalo(prevfloat(A/B.supremo), nextfloat(A/B.infimo))
+			
+	else  
+		return Intervalo(prevfloat(A/B.infimo), nextfloat(A/B.supremo))
+	end
+end
 	
-	function /(A::Intervalo, x::Real)
+function /(A::Intervalo, x::Real)
 		
 		I = A*Intervalo(1/x,1/x)	
 		
 		return I
 		
-	end 
+end 
 
 
 #Función inverso inv(a)
@@ -377,7 +401,7 @@ end
 
 # Potencias enteras y no negativas jeje 
 
-	function ^(A::Intervalo,n)
+	function ^(A::Intervalo, n::Int64)
 	
 	if n == 0
 			
@@ -424,56 +448,99 @@ end
      end	
 end  
 
+
 #División extendida 
-
-function division_extendida(A::Intervalo, B::Intervalo)
+function division_extendida(A::Intervalo, B::Intervalo) 
 		
-		if 0 ∉ B
-			I = A*Intervalo(1/B.supremo,1/B.infimo)
+		if 0.0 ∉ B
 			
-			return (I,)
+			return (A/B,)
 			
-		elseif 0 ∈ A && 0 ∈ B
+		elseif (0.0 ∈ A) && (0.0 ∈ B)
 			
-			return (Intervalo(-Inf,Inf),)
-
-                               elseif A.supremo < 0 && B.infimo<B.supremo == 0
- 
-                                               return (Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
+			return (Intervalo(-Inf, Inf),)
 			
-		elseif (A.supremo < 0) && (B.infimo < 0 < B.supremo) 
+		elseif (A.supremo < 0.0) && (B.infimo < B.supremo == 0.0)
 			
-			return (Intervalo(-Inf,nextfloat(A.supremo/B.supremo)),Intervalo(prevfloat(A.supremo/B.infimo),Inf),)
-		
-		elseif A.supremo < 0 && 0 == B.infimo < B.supremo
+			return (Intervalo(prevfloat(A.supremo/B.infimo), Inf),)
 			
-			return (Intervalo(-Inf, nextfloat(A.supremo/B.supremo)),)
+		elseif (A.supremo < 0.0) && (B.infimo < 0.0 < B.supremo)
 			
-		elseif 0 < A.infimo && 0 == B.supremo > B.infimo 
+			return (Intervalo(-Inf, nextfloat(A.supremo/B.supremo)), Intervalo(prevfloat(A.supremo/B.infimo), Inf),)
+			
+		elseif (0.0 < A.infimo) && (B.infimo < B.supremo == 0.0)
 			
 			return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)),)
 			
-		elseif (0 < A.infimo) && (B.infimo < 0 < B.supremo)
-
-                                              if  1/B.supremo > 1/B.infimo 
-                
-                                                    return (Intervalo(-Inf, Inf), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
-
-                                              else 
+		elseif (A.supremo < 0.0) && (0.0 == B.infimo < B.supremo)
 			
-		                return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
+			return (Intervalo(-Inf, nextfloat(A.supremo/B.supremo)),)
 			
-                                              end
- 
-		elseif B.infimo == B.supremo == 0 && 0 ∉ A 
+		elseif (0.0 < A.infimo) && (B.infimo < 0.0 < B.supremo)
 			
-			return (intervalo_vacio(BigFloat),)
+			return (Intervalo(-Inf, nextfloat(A.infimo/B.infimo)), Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
 			
-		else 
+		elseif (0.0 < A.infimo) && (0.0 == B.infimo < B.supremo)
 			
 			return (Intervalo(prevfloat(A.infimo/B.supremo), Inf),)
+			
+		elseif (0.0 ∉ A) && (B == Intervalo(0.0))
+			
+			return (intervalo_vacio(BigFloat),)
+		end
+	
+	end
+
+
+#ONE 
+
+    one(I::Intervalo{T}) where T<:Real = Intervalo(one(T))
+
+#CERO 
+   
+   zero(I::Intervalo{T}) where T<:Real = Intervalo(zero(T))
+
+
+#FUNCIÓN PARA VERIFICAR QUE F SEA MONÓTONA
+
+function esmonotona(f::Function,D::Intervalo)
+	
+	    R=ForwardDiff.derivative(f,D)
+	
+	    if R.infimo < 0 && R.supremo > 0
 		
-		end 
-	end 
+			return false 
+	
+	    elseif R.infimo > 0 && R.supremo < 0
+		
+			return false
+		
+	    else 
+		
+			return true
+		
+	    end 
+        end 
+
+#EN ESTA PARTE AGREGAMOS MÁS FUNCIONES QUE SE USARÁN EN EL MÉTODO DE NEWTON
+
+#Función diam que nos da el diámetro o longitud de un intervalo 
+
+function diam(I::Intervalo)
+           d = I.supremo - I.infimo
+           return d 
+end 
+
+#Función mid que calcula el punto medio de un intervalo y da el intervalo asociado  a ese punto medio 
+
+function mid(I::Intervalo)
+	m = (I.supremo + I.infimo)/2 
+	Im = Intervalo(m)
+	return Im 
+end 
+ 
+
+include("raices.jl")
+include("optimizacion.jl")
 
 end 
