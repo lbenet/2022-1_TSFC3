@@ -179,109 +179,28 @@ maximiza(f = x^2, I = Intervalo(-15, 9), tol = 1/1024) = Intervalo(-15)
 Dicha función utiliza subdivide() para particionar el intervalo en sub intervalos. 
 """
 function maximiza(f, dom::Intervalo, tol=1/1024)
-		
-	v_candidatos = [dom]  #Inicialmente sabemos que existe un maximo en ese intervalo
-                         #Asi que definimos el intervalo donde vive el maximo como
-                         #"Intervalos" dado que despues se fragmentara para encontrar 
-                         #varios maximo y ver cual maximo de todos ellos es el menor de
-                         #todos
-	
-		
+	v_candidatos = [dom]
 	while true
-			
-		parti = bisecta2(v_candidatos)  #Subdividimos el intervalo y eso lo guardamos
-                                      #en partición dado que ahora tenemos un vector
-                                      #de intervalos para ver el maximo de cada uno
-			
-		n = length(dom1)  #Checamos el numero de elementos que tiene 
-		                  #nuestra subintervalos o la
-				            #partición para iterar sobre esos elementos.
-							 
-		sups = ones(n);   infs = ones(n)   #Definimos listas donde iremos guardando la
-                                         #información de los valores que tomen los 
-                                         #supremos y minimos de cada subintervalo o 
-                                         #cada elemento de la partición.
-                                         #Dichas listas tienen dimensión "n" dado 
-                                         #que corresponderia al numero de supremos e
-                                         #infimos asociados al numero de elementos 
-                                         #de la partición. Y le ponemos ceros dado
-                                         #que se iran agregando valores a las 
-                                         #mismas.
-			
-		for j in 1:n #iteramos sobre el numero de subintervalos
-			     #Como cada elemento de la "parti" tiene asociado un sup, inf y este orden
-			     #Lo denotamos con la dimensión del arreglo de "supremos" e "infimos"
-			
-			#Definimos el arreglo de supremos
-			sups[j] = f(parti[j]).supremo #Agregamos el supremo "j-esimo" a la lista
-						      #de supremos correspondiente al elemento 
-						      #"j-esimo" de la partición generada por 
-						      #"subdivide"
-			
-			#Definimos el arreglo de infimos
-			infs[j] = f(parti[j]).infimo  #Agregamos el infimo "j-esimo" a la lista
-						      #de infimos correspondiente al elemento 
-						      #"j-esimo" de la partición generada por 
-						      #"subdivide" 
-		end
-			
-		Max_inf = maximum(infs) #Tomamos el maximo de los infimos dado que cada 
-					#cada vez que hacemos una subdivisión, un infimo
-					#se vuelve el maximo de la partición que sigue.
-					#Tambien para solo agregar a la lista de posibles 
-					#candidatos los valores mayores al maximo de los 
-					#infimos, es decir descartamos los intervalos donde
-					#el supremo "k-esimo" sea menor que el maximo de los 
-					#infimos (Si se grafica se entiende mejor).
-					#Es decir el supremo de los infimos es el segundo 
-					#mejor infimo que hay. 
-			
-		PC = Vector{Intervalo}() #Creamos una lista donde guardaremos los nuevos 
-					 #Posibles Candidatos. 
-			
-		#Iteramos sobre el numero de elementos de la partición. para agregar a los 
-		#candidatos que sumplen el siguiente criterio.
-			
-		for k in 1:n  #iteramos sobre el numero de elementos de la partición.
-				
-			if Max_inf < sups[k]  #Si se cumple que el maximo de los infimos es menor
-                            #que el "j-esimo" de los supremos, de esta
-                            #forma, descartamos los casos "j-esimos" donde el 
-                            #supremo "j-esimo" es menor que el maximo de los 
-                            #infimos. Tambien cheque que el minimo de los
-                            #intervalos es el segundo supremo de todos, entonces
-                            #si hay uno que le gane lo agregamos como candidato
-					
-				append!(PC, parti[k]) #Si se sumple agregamos el elemento "k-esimo" de 
-						      #la iteración a la lista vacia que contendra a los 
-						      #posibles candidatos.
-			end
-				
-		end
-		v_candidatos = PC   #Ya con los candidatos, los sustituimos por "v_candidatos" 
-                                    #que son justo los valores que subdividiamos para
-				    #encontrar el maximo.
-						  
-			
-		#Checamos que el tamaño del intervalo que es candidato a ser el maximo es tan
-		#pequeño como la tolerancia que definimos en la funcion
-			
-		P0 = Intervalos[1]    #Checamos para un elemento del nuevo intervalo a 
-				      #subdividir (si es el caso) y si un elemento cumple la 
-				      #tolerancia, de ser el caso se termina el ciclo.
-				      #Definimos un elemento de intervalos solo para checar 
-				      #su longitud
-			
-		if diam(P0) < tol #Checamos la longitud del intervalo
-				  #para ver si es menor que la tolerancia
-			PSuvIn = PSuvInt(f, v_candidatos)
-			
-			#En caso tambien de cumplir la tolerancia regresamos los valores PSuvIn &
-			#v_candidatos
-			return v_candidatos, PSuvIn #Regresamos los intervalos candidatos ya 										   
-                                                    #subdivididos
-						    #que contienen al maximo y la lista de maximos
-						    #Correspondientes.
-		end
-			
+	dom1 = bisecta2(v_candidatos)
+	L = length(dom1)   
+	sups = ones(L)
+	infs = ones(L)
+	for n in 1:L
+		sups[n] = f(dom1[n]).supremo
+		infs[n] = f(dom1[n]).infimo
 	end
+	INF = maximum(infs)
+	V = Vector{Intervalo}()
+	for j in 1:L
+		if INF < sups[j]
+		 	append!(V, dom1[j])
+		end
+	end
+	v_candidatos = V   
+	I1 = v_candidatos[1]  
+	if diam(I1) < tol
+		F1 = PSuvInt(f, v_candidatos)
+			return v_candidatos, F1
+		end
+	end
+end
