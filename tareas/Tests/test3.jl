@@ -96,6 +96,8 @@ end
     @test d ⪽ d*d
     @test d ⪽ d^3
     @test d^4 == d^2
+    @test Intervalo(-0.25,0.5)^2 == (-Intervalo(-0.25,0.5))^2 == Intervalo(0.0, 0.5)^2
+    @test Intervalo(-0.25,0.5)^3 == -(-Intervalo(-0.25,0.5))^3 == Intervalo(prevfloat(-1/2^6), nextfloat((1/2^3)))
     @test a / emptyFl == emptyFl
     @test emptyB / c == emptyB
     @test emptyFl / emptyFl == emptyFl
